@@ -11,7 +11,8 @@ namespace blast4
         : m_window()
         , m_settings(settings)
         , m_board()
-        , m_context(m_window, m_settings, m_board)
+        , m_images()
+        , m_context(m_window, m_settings, m_board, m_images)
     {}
 
     void Coordinator::play()
@@ -26,6 +27,7 @@ namespace blast4
         M_CHECK(m_window.isOpen(), "Error:  Failed to open graphics window!");
 
         m_board.setup(m_context);
+        m_images.setup(m_context);
     }
 
     void Coordinator::loop()
@@ -56,7 +58,10 @@ namespace blast4
     void Coordinator::draw()
     {
         m_window.clear(m_context.settings.background_color);
+
         m_board.draw(m_context);
+        m_window.draw(m_context.images.shipSprite());
+
         m_window.display();
     }
 

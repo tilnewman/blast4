@@ -93,7 +93,7 @@ namespace blast4
         {
             lane += blockSize.x;
             lane += (m_unitSize * 0.5f);
-            m_vertLanes.push_back(lane);
+            m_horizLanes.push_back(lane);
             lane += (m_unitSize * 0.5f);
         }
 
@@ -102,7 +102,7 @@ namespace blast4
         {
             lane += blockSize.y;
             lane += (m_unitSize * 0.5f);
-            m_horizLanes.push_back(lane);
+            m_vertLanes.push_back(lane);
             lane += (m_unitSize * 0.5f);
         }
     }

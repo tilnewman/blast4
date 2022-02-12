@@ -3,6 +3,7 @@
 
 #include "board.hpp"
 #include "context.hpp"
+#include "images.hpp"
 #include "settings.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -28,6 +29,7 @@ namespace blast4
         sf::RenderWindow m_window;
         Settings m_settings;
         Board m_board;
+        Images m_images;
 
         Context m_context;
     };

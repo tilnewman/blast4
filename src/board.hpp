@@ -26,6 +26,8 @@ namespace blast4
             return { m_horizLanes.at(0), m_vertLanes.at(0) };
         }
 
+        const sf::Vector2f unitSize() const { return { m_unitSize, m_unitSize }; }
+
       private:
         sf::Vector2f m_windowSize;
         float m_unitSize = 0.0f;

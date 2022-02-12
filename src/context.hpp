@@ -11,20 +11,23 @@ namespace sf
 namespace blast4
 {
 
-    struct Settings;
     class Board;
+    class Images;
+    struct Settings;
 
     struct Context
     {
-        Context(sf::RenderWindow & win, const Settings & set, Board & boa)
+        Context(sf::RenderWindow & win, const Settings & set, Board & boa, Images & ima)
             : window(win)
             , settings(set)
             , board(boa)
+            , images(ima)
         {}
 
         sf::RenderWindow & window;
         const Settings & settings;
         Board & board;
+        Images & images;
     };
 
 } // namespace blast4
