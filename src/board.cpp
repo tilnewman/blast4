@@ -114,4 +114,19 @@ namespace blast4
         context.window.draw(&m_blockVerts[0], m_blockVerts.size(), sf::Quads);
     }
 
+    float Board::findFirstWithinRange(const std::vector<float> & lanes, const float position) const
+    {
+        for (const float lane : lanes)
+        {
+            const float diff{ util::abs(position - lane) };
+
+            if (diff < 2.0f)
+            {
+                return lane;
+            }
+        }
+
+        return -1.0f;
+    }
+
 } // namespace blast4

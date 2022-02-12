@@ -25,6 +25,8 @@ namespace blast4
         void handleEvents();
         void draw();
 
+        void moveShip();
+
       private:
         sf::RenderWindow m_window;
         Settings m_settings;

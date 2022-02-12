@@ -21,12 +21,27 @@ namespace blast4
         void setup(Context & context);
         void draw(Context & context);
 
+        const sf::FloatRect rect() const { return m_boardRect; }
+
         const sf::Vector2f startPosition() const
         {
             return { m_horizLanes.at(0), m_vertLanes.at(0) };
         }
 
         const sf::Vector2f unitSize() const { return { m_unitSize, m_unitSize }; }
+
+        float findLaneHoriz(const float position) const
+        {
+            return findFirstWithinRange(m_horizLanes, position);
+        }
+
+        float findLaneVert(const float position) const
+        {
+            return findFirstWithinRange(m_vertLanes, position);
+        }
+
+      private:
+        float findFirstWithinRange(const std::vector<float> & lanes, const float position) const;
 
       private:
         sf::Vector2f m_windowSize;
