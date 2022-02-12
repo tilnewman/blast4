@@ -2,7 +2,7 @@
 
 #include "check-macros.hpp"
 
-#include <SFML/Window/event.hpp>
+#include <SFML/Window/Event.hpp>
 
 namespace blast4
 {
