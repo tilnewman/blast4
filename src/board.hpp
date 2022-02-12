@@ -21,10 +21,12 @@ namespace blast4
         void setup(Context & context);
         void draw(Context & context);
 
-      private:
-        sf::Color m_boardColor;
-        sf::Color m_gridColor;
+        const sf::Vector2f startPosition() const
+        {
+            return { m_horizLanes.at(0), m_vertLanes.at(0) };
+        }
 
+      private:
         sf::Vector2f m_windowSize;
         float m_unitSize = 0.0f;
         sf::FloatRect m_boardRect;
@@ -32,6 +34,9 @@ namespace blast4
         std::vector<sf::Vertex> m_blockVerts;
         std::vector<sf::Vertex> m_borderVerts;
         std::vector<sf::Vertex> m_backgroundVerts;
+
+        std::vector<float> m_horizLanes;
+        std::vector<float> m_vertLanes;
     };
 
 } // namespace blast4

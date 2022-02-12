@@ -9,10 +9,14 @@ namespace blast4
 {
 
     Board::Board()
-        : m_boardColor(sf::Color::Black)
-        , m_gridColor(sf::Color(150, 150, 150))
-        , m_windowSize()
+        : m_windowSize()
         , m_unitSize(0.0f)
+        , m_boardRect()
+        , m_blockVerts()
+        , m_borderVerts()
+        , m_backgroundVerts()
+        , m_horizLanes()
+        , m_vertLanes()
     {}
 
     void Board::setup(Context & context)
@@ -64,20 +68,43 @@ namespace blast4
         for (const sf::Vector2f & blockPosition : blockPositions)
         {
             util::appendQuadVerts(
-                { (boardPos + blockPosition), blockSize }, m_blockVerts, m_gridColor);
+                { (boardPos + blockPosition), blockSize },
+                m_blockVerts,
+                context.settings.block_color);
         }
 
-        m_borderVerts.resize(5, sf::Vertex(util::position(m_boardRect), m_gridColor));
+        m_borderVerts.resize(
+            5, sf::Vertex(util::position(m_boardRect), context.settings.block_color));
+
         m_borderVerts[1].position += { m_boardRect.width, 0.0f };
         m_borderVerts[2].position += { m_boardRect.width, m_boardRect.height };
         m_borderVerts[3].position += { 0.0f, m_boardRect.height };
 
         m_backgroundVerts = m_borderVerts;
-        m_backgroundVerts[0].color = m_boardColor;
-        m_backgroundVerts[1].color = m_boardColor;
-        m_backgroundVerts[2].color = m_boardColor;
-        m_backgroundVerts[3].color = m_boardColor;
+        m_backgroundVerts[0].color = context.settings.background_color;
+        m_backgroundVerts[1].color = context.settings.background_color;
+        m_backgroundVerts[2].color = context.settings.background_color;
+        m_backgroundVerts[3].color = context.settings.background_color;
         m_backgroundVerts.pop_back();
+
+        // possible lanes of movement
+        float lane = m_boardRect.left;
+        while (lane < m_boardRect.width)
+        {
+            lane += blockSize.x;
+            lane += (m_unitSize * 0.5f);
+            m_vertLanes.push_back(lane);
+            lane += (m_unitSize * 0.5f);
+        }
+
+        lane = m_boardRect.top;
+        while (lane < m_boardRect.height)
+        {
+            lane += blockSize.y;
+            lane += (m_unitSize * 0.5f);
+            m_horizLanes.push_back(lane);
+            lane += (m_unitSize * 0.5f);
+        }
     }
 
     void Board::draw(Context & context)
