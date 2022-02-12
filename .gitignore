@@ -38,6 +38,7 @@
 **/.vscode
 **/.vs
 **/CPTCMakeBuild
+**/Blast4/media
 *.DS_Store
 *.oa
 *.ncb
