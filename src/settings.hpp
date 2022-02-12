@@ -8,11 +8,11 @@ namespace blast4
 
     struct Settings
     {
-        sf::Color background_color = sf::Color(20, 20, 20);
+        sf::Color background_color = sf::Color(30, 25, 45);
         sf::Color grid_color = sf::Color::White;
         sf::Color ship_color = sf::Color::White;
-        float grid_size_ratio = 0.0275f;
-        int grid_side_count = 20;
+        float unit_size_ratio = 0.03f;
+        float edge_pad_ratio = 0.05f;
     };
 
 } // namespace blast4

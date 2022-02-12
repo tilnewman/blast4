@@ -56,6 +56,7 @@ namespace blast4
     void Coordinator::draw()
     {
         m_window.clear(m_context.settings.background_color);
+        m_board.draw(m_context);
         m_window.display();
     }
 
