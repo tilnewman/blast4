@@ -8,7 +8,7 @@ namespace blast4
 
     struct Settings
     {
-        sf::Color background_color = sf::Color(37, 41, 45);
+        sf::Color background_color = sf::Color(27, 31, 35);
         sf::Color board_color = sf::Color::Black;
         sf::Color block_color = background_color + sf::Color(100, 100, 120);
         sf::Color ship_color = sf::Color(220, 220, 220);
