@@ -61,14 +61,17 @@ namespace blast4
         }
 
         // set the actual board rect based on the number of blocks that fit the estimate above
-        const sf::Vector2f boardSize{ (extents.x - m_unitSize), (extents.y - m_unitSize) };
+        const sf::Vector2f boardSize{ (extents.x + m_unitSize), (extents.y + m_unitSize) };
         const sf::Vector2f boardPos = ((m_windowSize * 0.5f) - (boardSize * 0.5f));
         m_boardRect = { boardPos, boardSize };
 
         // verts
         for (const sf::Vector2f & blockPosition : blockPositions)
         {
-            const sf::FloatRect blockRect{ (boardPos + blockPosition), blockSize };
+            const sf::FloatRect blockRect{
+                (boardPos + blockPosition + sf::Vector2f{ m_unitSize, m_unitSize }), blockSize
+            };
+
             util::appendQuadVerts(blockRect, m_blockVerts, context.settings.block_color);
             m_blockRects.push_back(blockRect);
         }
@@ -91,19 +94,19 @@ namespace blast4
         float lane = m_boardRect.left;
         while (lane < m_boardRect.width)
         {
-            lane += blockSize.x;
             lane += (m_unitSize * 0.5f);
             m_horizLanes.push_back(lane);
             lane += (m_unitSize * 0.5f);
+            lane += blockSize.x;
         }
 
         lane = m_boardRect.top;
         while (lane < m_boardRect.height)
         {
-            lane += blockSize.y;
             lane += (m_unitSize * 0.5f);
             m_vertLanes.push_back(lane);
             lane += (m_unitSize * 0.5f);
+            lane += blockSize.y;
         }
     }
 
