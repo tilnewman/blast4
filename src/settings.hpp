@@ -14,6 +14,7 @@ namespace blast4
         sf::Color ship_color = sf::Color(220, 220, 220);
         float unit_size_ratio = 0.03f;
         float edge_pad_ratio = 0.05f;
+        float ship_move_speed = 125.0f;
     };
 
 } // namespace blast4

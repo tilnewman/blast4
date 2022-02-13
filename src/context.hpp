@@ -22,12 +22,15 @@ namespace blast4
             , settings(set)
             , board(boa)
             , images(ima)
+            , frame_time_sec(0.0f)
         {}
 
         sf::RenderWindow & window;
         const Settings & settings;
         Board & board;
         Images & images;
+
+        float frame_time_sec;
     };
 
 } // namespace blast4

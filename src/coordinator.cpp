@@ -33,8 +33,11 @@ namespace blast4
 
     void Coordinator::loop()
     {
+        sf::Clock frameClock;
+
         while (m_window.isOpen())
         {
+            m_context.frame_time_sec = frameClock.restart().asSeconds();
             handleEvents();
             moveShip();
             draw();
@@ -72,53 +75,55 @@ namespace blast4
 
     void Coordinator::moveShip()
     {
+        const float moveAmount{ m_context.frame_time_sec * m_settings.ship_move_speed };
+
         sf::Sprite & sprite = m_images.shipSprite();
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::I))
         {
-            sprite.move(0.0f, -1.0f);
+            sprite.move(0.0f, -moveAmount);
 
             if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
                 m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
             {
-                sprite.move(0.0f, 1.0f);
+                sprite.move(0.0f, moveAmount);
             }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::M))
         {
-            sprite.move(0.0f, 1.0f);
+            sprite.move(0.0f, moveAmount);
 
             if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
                 m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
             {
-                sprite.move(0.0f, -1.0f);
+                sprite.move(0.0f, -moveAmount);
             }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::L))
         {
-            sprite.move(1.0f, 0.0f);
+            sprite.move(moveAmount, 0.0f);
 
             if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
                 m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
             {
-                sprite.move(-1.0f, 0.0f);
+                sprite.move(-moveAmount, 0.0f);
             }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::J))
         {
-            sprite.move(-1.0f, 0.0f);
+            sprite.move(-moveAmount, 0.0f);
 
             if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
                 m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
             {
-                sprite.move(1.0f, 0.0f);
+                sprite.move(moveAmount, 0.0f);
             }
         }
     }
