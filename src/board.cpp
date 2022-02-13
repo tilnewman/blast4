@@ -12,6 +12,7 @@ namespace blast4
         : m_windowSize()
         , m_unitSize(0.0f)
         , m_boardRect()
+        , m_blockRects()
         , m_blockVerts()
         , m_borderVerts()
         , m_backgroundVerts()
@@ -67,10 +68,9 @@ namespace blast4
         // verts
         for (const sf::Vector2f & blockPosition : blockPositions)
         {
-            util::appendQuadVerts(
-                { (boardPos + blockPosition), blockSize },
-                m_blockVerts,
-                context.settings.block_color);
+            const sf::FloatRect blockRect{ (boardPos + blockPosition), blockSize };
+            util::appendQuadVerts(blockRect, m_blockVerts, context.settings.block_color);
+            m_blockRects.push_back(blockRect);
         }
 
         m_borderVerts.resize(
@@ -81,10 +81,10 @@ namespace blast4
         m_borderVerts[3].position += { 0.0f, m_boardRect.height };
 
         m_backgroundVerts = m_borderVerts;
-        m_backgroundVerts[0].color = context.settings.background_color;
-        m_backgroundVerts[1].color = context.settings.background_color;
-        m_backgroundVerts[2].color = context.settings.background_color;
-        m_backgroundVerts[3].color = context.settings.background_color;
+        m_backgroundVerts[0].color = context.settings.board_color;
+        m_backgroundVerts[1].color = context.settings.board_color;
+        m_backgroundVerts[2].color = context.settings.board_color;
+        m_backgroundVerts[3].color = context.settings.board_color;
         m_backgroundVerts.pop_back();
 
         // possible lanes of movement
@@ -127,6 +127,44 @@ namespace blast4
         }
 
         return -1.0f;
+    }
+
+    bool Board::isCollisionWithBlock(const sf::FloatRect & rect) const
+    {
+        for (const sf::FloatRect blockRect : m_blockRects)
+        {
+            if (blockRect.intersects(rect))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool Board::isCollisionWithBoardEdge(const sf::FloatRect & rect) const
+    {
+        if (rect.top < m_boardRect.top)
+        {
+            return true;
+        }
+
+        if (util::bottom(rect) > util::bottom(m_boardRect))
+        {
+            return true;
+        }
+
+        if (util::right(rect) > util::right(m_boardRect))
+        {
+            return true;
+        }
+
+        if (rect.left < m_boardRect.left)
+        {
+            return true;
+        }
+
+        return false;
     }
 
 } // namespace blast4

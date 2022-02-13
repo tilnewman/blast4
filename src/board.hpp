@@ -40,6 +40,9 @@ namespace blast4
             return findFirstWithinRange(m_vertLanes, position);
         }
 
+        bool isCollisionWithBlock(const sf::FloatRect & rect) const;
+        bool isCollisionWithBoardEdge(const sf::FloatRect & rect) const;
+
       private:
         float findFirstWithinRange(const std::vector<float> & lanes, const float position) const;
 
@@ -47,6 +50,7 @@ namespace blast4
         sf::Vector2f m_windowSize;
         float m_unitSize = 0.0f;
         sf::FloatRect m_boardRect;
+        std::vector<sf::FloatRect> m_blockRects;
 
         std::vector<sf::Vertex> m_blockVerts;
         std::vector<sf::Vertex> m_borderVerts;

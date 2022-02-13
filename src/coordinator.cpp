@@ -72,50 +72,53 @@ namespace blast4
 
     void Coordinator::moveShip()
     {
-        const sf::Vector2f shipPosition = m_images.shipSprite().getPosition();
-        const sf::FloatRect shipBounds = m_images.shipSprite().getGlobalBounds();
+        sf::Sprite & sprite = m_images.shipSprite();
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::I))
         {
-            const float lane = m_board.findLaneHoriz(shipPosition.x);
-            if ((lane > 0.0f) && (shipBounds.top > m_board.rect().top))
+            sprite.move(0.0f, -1.0f);
+
+            if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
+                m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
             {
-                m_images.shipSprite().setPosition(
-                    lane, m_images.shipSprite().getPosition().y - 1.0f);
+                sprite.move(0.0f, 1.0f);
             }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::M))
         {
-            const float lane = m_board.findLaneHoriz(shipPosition.x);
-            if ((lane > 0.0f) && (util::bottom(shipBounds) < util::bottom(m_board.rect())))
+            sprite.move(0.0f, 1.0f);
+
+            if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
+                m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
             {
-                m_images.shipSprite().setPosition(
-                    lane, m_images.shipSprite().getPosition().y + 1.0f);
+                sprite.move(0.0f, -1.0f);
             }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::L))
         {
-            const float lane = m_board.findLaneVert(shipPosition.y);
-            if ((lane > 0.0f) && (util::right(shipBounds) < util::right(m_board.rect())))
+            sprite.move(1.0f, 0.0f);
+
+            if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
+                m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
             {
-                m_images.shipSprite().setPosition(
-                    m_images.shipSprite().getPosition().x + 1.0f, lane);
+                sprite.move(-1.0f, 0.0f);
             }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::J))
         {
-            const float lane = m_board.findLaneVert(shipPosition.y);
-            if ((lane > 0.0f) && (shipBounds.left > m_board.rect().left))
+            sprite.move(-1.0f, 0.0f);
+
+            if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
+                m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
             {
-                m_images.shipSprite().setPosition(
-                    m_images.shipSprite().getPosition().x - 1.0f, lane);
+                sprite.move(1.0f, 0.0f);
             }
         }
     }
