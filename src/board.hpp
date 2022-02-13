@@ -19,7 +19,7 @@ namespace blast4
         Board();
 
         void setup(Context & context);
-        void draw(Context & context);
+        void draw(Context & context) const;
 
         const sf::FloatRect rect() const { return m_boardRect; }
 

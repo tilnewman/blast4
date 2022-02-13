@@ -110,7 +110,7 @@ namespace blast4
         }
     }
 
-    void Board::draw(Context & context)
+    void Board::draw(Context & context) const
     {
         context.window.draw(&m_backgroundVerts[0], m_backgroundVerts.size(), sf::Quads);
         context.window.draw(&m_borderVerts[0], m_borderVerts.size(), sf::LinesStrip);

@@ -3,8 +3,6 @@
 #include "check-macros.hpp"
 #include "util.hpp"
 
-#include <SFML/Window/Event.hpp>
-
 namespace blast4
 {
 
@@ -13,7 +11,8 @@ namespace blast4
         , m_settings(settings)
         , m_board()
         , m_images()
-        , m_context(m_window, m_settings, m_board, m_images)
+        , m_bullets()
+        , m_context(m_window, m_settings, m_board, m_images, m_bullets)
     {}
 
     void Coordinator::play()
@@ -29,6 +28,7 @@ namespace blast4
 
         m_board.setup(m_context);
         m_images.setup(m_context);
+        m_bullets.setup(m_context);
     }
 
     void Coordinator::loop()
@@ -39,7 +39,7 @@ namespace blast4
         {
             m_context.frame_time_sec = frameClock.restart().asSeconds();
             handleEvents();
-            moveShip();
+            update();
             draw();
         }
     }
@@ -49,18 +49,68 @@ namespace blast4
         sf::Event event;
         while (m_window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
-            {
-                m_window.close();
-            }
-            else if (event.type == sf::Event::KeyPressed)
-            {
-                if (sf::Keyboard::Escape == event.key.code)
-                {
-                    m_window.close();
-                }
-            }
+            handleEvent(event);
         }
+    }
+
+    void Coordinator::handleEvent(const sf::Event & event)
+    {
+        if (event.type == sf::Event::Closed)
+        {
+            m_window.close();
+        }
+
+        if (event.type != sf::Event::KeyPressed)
+        {
+            return;
+        }
+
+        if (sf::Keyboard::Escape == event.key.code)
+        {
+            m_window.close();
+        }
+        else if (sf::Keyboard::E == event.key.code)
+        {
+            const sf::FloatRect shipRect = m_images.shipSprite().getGlobalBounds();
+
+            const sf::Vector2f startPosition{ (shipRect.left + (shipRect.width * 0.5f)),
+                                              shipRect.top };
+
+            m_bullets.create(m_context, startPosition, { 0.0f, -1.0f });
+        }
+        else if (sf::Keyboard::X == event.key.code)
+        {
+            const sf::FloatRect shipRect = m_images.shipSprite().getGlobalBounds();
+
+            const sf::Vector2f startPosition{ (shipRect.left + (shipRect.width * 0.5f)),
+                                              util::bottom(shipRect) };
+
+            m_bullets.create(m_context, startPosition, { 0.0f, 1.0f });
+        }
+        else if (sf::Keyboard::S == event.key.code)
+        {
+            const sf::FloatRect shipRect = m_images.shipSprite().getGlobalBounds();
+
+            const sf::Vector2f startPosition{ shipRect.left,
+                                              (shipRect.top + (shipRect.height * 0.5f)) };
+
+            m_bullets.create(m_context, startPosition, { -1.0f, 0.0f });
+        }
+        else if (sf::Keyboard::F == event.key.code)
+        {
+            const sf::FloatRect shipRect = m_images.shipSprite().getGlobalBounds();
+
+            const sf::Vector2f startPosition{ util::right(shipRect),
+                                              (shipRect.top + (shipRect.height * 0.5f)) };
+
+            m_bullets.create(m_context, startPosition, { 1.0f, 0.0f });
+        }
+    }
+
+    void Coordinator::update()
+    {
+        moveShip();
+        m_bullets.update(m_context);
     }
 
     void Coordinator::draw()
@@ -69,13 +119,14 @@ namespace blast4
 
         m_board.draw(m_context);
         m_window.draw(m_context.images.shipSprite());
+        m_bullets.draw(m_context);
 
         m_window.display();
     }
 
     void Coordinator::moveShip()
     {
-        const float moveAmount{ m_context.frame_time_sec * m_settings.ship_move_speed };
+        const float moveAmount{ m_context.frame_time_sec * m_settings.ship_speed };
 
         sf::Sprite & sprite = m_images.shipSprite();
 

@@ -13,15 +13,18 @@ namespace blast4
 
     class Board;
     class Images;
+    class Bullets;
     struct Settings;
 
     struct Context
     {
-        Context(sf::RenderWindow & win, const Settings & set, Board & boa, Images & ima)
+        Context(
+            sf::RenderWindow & win, const Settings & set, Board & boa, Images & ima, Bullets & bul)
             : window(win)
             , settings(set)
             , board(boa)
             , images(ima)
+            , bullets(bul)
             , frame_time_sec(0.0f)
         {}
 
@@ -29,6 +32,7 @@ namespace blast4
         const Settings & settings;
         Board & board;
         Images & images;
+        Bullets & bullets;
 
         float frame_time_sec;
     };
