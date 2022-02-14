@@ -14,7 +14,6 @@ namespace blast4
     Starship::Starship()
         : m_texture()
         , m_sprite()
-        , m_shootClock()
     {}
 
     void Starship::setup(Context & context)
@@ -129,12 +128,10 @@ namespace blast4
                 sf::Vector2f{ util::right(shipRect), (shipRect.top + (shipRect.height * 0.5f)) };
         }
 
-        if (didShoot &&
-            (m_shootClock.getElapsedTime().asSeconds() > context.settings.bullet_shoot_delay_sec))
+        if (didShoot)
         {
             if (context.bullets.create(context, startPosition, unitVelocity))
             {
-                m_shootClock.restart();
                 // TODO sfx
             }
         }

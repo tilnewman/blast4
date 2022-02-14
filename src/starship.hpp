@@ -30,7 +30,6 @@ namespace blast4
       private:
         sf::Texture m_texture;
         sf::Sprite m_sprite;
-        sf::Clock m_shootClock;
     };
 
 } // namespace blast4
