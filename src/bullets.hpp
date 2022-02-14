@@ -27,7 +27,7 @@ namespace blast4
         void update(Context & context);
         void draw(Context & context) const;
 
-        void create(
+        bool create(
             Context & context, const sf::Vector2f & position, const sf::Vector2f & unit_velocity);
 
       private:

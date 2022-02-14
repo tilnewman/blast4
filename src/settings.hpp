@@ -19,6 +19,7 @@ namespace blast4
         float ship_speed = 125.0f;
         float bullet_speed = 300.0f;
         float bullet_radius_unit_ratio = 0.1f;
+        float bullet_shoot_delay_sec = 0.1f;
     };
 
 } // namespace blast4

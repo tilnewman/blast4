@@ -58,7 +58,10 @@ namespace blast4
         if (event.type == sf::Event::Closed)
         {
             m_window.close();
+            return;
         }
+
+        m_starship.handleEvent(m_context, event);
 
         if (event.type != sf::Event::KeyPressed)
         {
@@ -69,47 +72,11 @@ namespace blast4
         {
             m_window.close();
         }
-        else if (sf::Keyboard::E == event.key.code)
-        {
-            const sf::FloatRect shipRect = m_starship.sprite().getGlobalBounds();
-
-            const sf::Vector2f startPosition{ (shipRect.left + (shipRect.width * 0.5f)),
-                                              shipRect.top };
-
-            m_bullets.create(m_context, startPosition, { 0.0f, -1.0f });
-        }
-        else if (sf::Keyboard::X == event.key.code)
-        {
-            const sf::FloatRect shipRect = m_starship.sprite().getGlobalBounds();
-
-            const sf::Vector2f startPosition{ (shipRect.left + (shipRect.width * 0.5f)),
-                                              util::bottom(shipRect) };
-
-            m_bullets.create(m_context, startPosition, { 0.0f, 1.0f });
-        }
-        else if (sf::Keyboard::S == event.key.code)
-        {
-            const sf::FloatRect shipRect = m_starship.sprite().getGlobalBounds();
-
-            const sf::Vector2f startPosition{ shipRect.left,
-                                              (shipRect.top + (shipRect.height * 0.5f)) };
-
-            m_bullets.create(m_context, startPosition, { -1.0f, 0.0f });
-        }
-        else if (sf::Keyboard::F == event.key.code)
-        {
-            const sf::FloatRect shipRect = m_starship.sprite().getGlobalBounds();
-
-            const sf::Vector2f startPosition{ util::right(shipRect),
-                                              (shipRect.top + (shipRect.height * 0.5f)) };
-
-            m_bullets.create(m_context, startPosition, { 1.0f, 0.0f });
-        }
     }
 
     void Coordinator::update()
     {
-        moveShip();
+        m_starship.update(m_context);
         m_bullets.update(m_context);
     }
 
@@ -118,65 +85,10 @@ namespace blast4
         m_window.clear(m_context.settings.background_color);
 
         m_board.draw(m_context);
-        m_window.draw(m_starship.sprite());
+        m_starship.draw(m_context);
         m_bullets.draw(m_context);
 
         m_window.display();
-    }
-
-    void Coordinator::moveShip()
-    {
-        const float moveAmount{ m_context.frame_time_sec * m_settings.ship_speed };
-
-        sf::Sprite & sprite = m_starship.sprite();
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) ||
-            sf::Keyboard::isKeyPressed(sf::Keyboard::I))
-        {
-            sprite.move(0.0f, -moveAmount);
-
-            if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
-                m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
-            {
-                sprite.move(0.0f, moveAmount);
-            }
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ||
-            sf::Keyboard::isKeyPressed(sf::Keyboard::M))
-        {
-            sprite.move(0.0f, moveAmount);
-
-            if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
-                m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
-            {
-                sprite.move(0.0f, -moveAmount);
-            }
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
-            sf::Keyboard::isKeyPressed(sf::Keyboard::L))
-        {
-            sprite.move(moveAmount, 0.0f);
-
-            if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
-                m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
-            {
-                sprite.move(-moveAmount, 0.0f);
-            }
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ||
-            sf::Keyboard::isKeyPressed(sf::Keyboard::J))
-        {
-            sprite.move(-moveAmount, 0.0f);
-
-            if (m_board.isCollisionWithBlock(sprite.getGlobalBounds()) ||
-                m_board.isCollisionWithBoardEdge(sprite.getGlobalBounds()))
-            {
-                sprite.move(moveAmount, 0.0f);
-            }
-        }
     }
 
 } // namespace blast4

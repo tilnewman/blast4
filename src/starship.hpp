@@ -5,6 +5,8 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Clock.hpp>
+#include <SFML/Window/Event.hpp>
 
 namespace blast4
 {
@@ -16,11 +18,19 @@ namespace blast4
 
       public:
         void setup(Context & context);
-        sf::Sprite & sprite() { return m_sprite; }
+        void update(Context & context);
+        void draw(Context & context) const;
+        void handleEvent(Context & context, const sf::Event & event);
+
+        bool intersects(const sf::FloatRect & rect) const
+        {
+            return m_sprite.getGlobalBounds().intersects(rect);
+        }
 
       private:
         sf::Texture m_texture;
         sf::Sprite m_sprite;
+        sf::Clock m_shootClock;
     };
 
 } // namespace blast4
