@@ -130,7 +130,7 @@ namespace blast4
 
         if (didShoot)
         {
-            if (context.bullets.create(context, startPosition, unitVelocity))
+            if (context.bullets.create(context, shipRect, startPosition, unitVelocity))
             {
                 // TODO sfx
             }

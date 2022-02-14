@@ -28,7 +28,10 @@ namespace blast4
         void draw(Context & context) const;
 
         bool create(
-            Context & context, const sf::Vector2f & position, const sf::Vector2f & unit_velocity);
+            Context & context,
+            const sf::FloatRect & shooterBounds,
+            const sf::Vector2f & position,
+            const sf::Vector2f & unit_velocity);
 
       private:
         std::vector<Bullet> m_bullets;

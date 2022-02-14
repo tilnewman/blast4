@@ -52,7 +52,10 @@ namespace blast4
     }
 
     bool Bullets::create(
-        Context & context, const sf::Vector2f & position, const sf::Vector2f & unit_velocity)
+        Context & context,
+        const sf::FloatRect & shooterBounds,
+        const sf::Vector2f & position,
+        const sf::Vector2f & unit_velocity)
     {
         Bullet bullet;
 
@@ -73,12 +76,10 @@ namespace blast4
         // so that it doesn't hit the starship that fired it
         bullet.shape.setPosition({ position + (unit_velocity * (radius * 1.5f)) });
 
-        const sf::FloatRect globalBounds = bullet.shape.getGlobalBounds();
-        M_CHECK(
-            (!context.starship.intersects(globalBounds)),
-            "Error:  Bullet fired by starship hit that starship!");
+        const sf::FloatRect bulletBounds = bullet.shape.getGlobalBounds();
 
-        if (context.board.isCollisionWithBlock(globalBounds))
+        if (shooterBounds.intersects(bulletBounds) ||
+            context.board.isCollisionWithBlock(bulletBounds))
         {
             // TODO sfx reject shot
             return false;
