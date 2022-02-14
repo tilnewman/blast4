@@ -10,9 +10,9 @@ namespace blast4
         : m_window()
         , m_settings(settings)
         , m_board()
-        , m_images()
+        , m_starship()
         , m_bullets()
-        , m_context(m_window, m_settings, m_board, m_images, m_bullets)
+        , m_context(m_window, m_settings, m_board, m_starship, m_bullets)
     {}
 
     void Coordinator::play()
@@ -27,7 +27,7 @@ namespace blast4
         M_CHECK(m_window.isOpen(), "Error:  Failed to open graphics window!");
 
         m_board.setup(m_context);
-        m_images.setup(m_context);
+        m_starship.setup(m_context);
         m_bullets.setup(m_context);
     }
 
@@ -71,7 +71,7 @@ namespace blast4
         }
         else if (sf::Keyboard::E == event.key.code)
         {
-            const sf::FloatRect shipRect = m_images.shipSprite().getGlobalBounds();
+            const sf::FloatRect shipRect = m_starship.sprite().getGlobalBounds();
 
             const sf::Vector2f startPosition{ (shipRect.left + (shipRect.width * 0.5f)),
                                               shipRect.top };
@@ -80,7 +80,7 @@ namespace blast4
         }
         else if (sf::Keyboard::X == event.key.code)
         {
-            const sf::FloatRect shipRect = m_images.shipSprite().getGlobalBounds();
+            const sf::FloatRect shipRect = m_starship.sprite().getGlobalBounds();
 
             const sf::Vector2f startPosition{ (shipRect.left + (shipRect.width * 0.5f)),
                                               util::bottom(shipRect) };
@@ -89,7 +89,7 @@ namespace blast4
         }
         else if (sf::Keyboard::S == event.key.code)
         {
-            const sf::FloatRect shipRect = m_images.shipSprite().getGlobalBounds();
+            const sf::FloatRect shipRect = m_starship.sprite().getGlobalBounds();
 
             const sf::Vector2f startPosition{ shipRect.left,
                                               (shipRect.top + (shipRect.height * 0.5f)) };
@@ -98,7 +98,7 @@ namespace blast4
         }
         else if (sf::Keyboard::F == event.key.code)
         {
-            const sf::FloatRect shipRect = m_images.shipSprite().getGlobalBounds();
+            const sf::FloatRect shipRect = m_starship.sprite().getGlobalBounds();
 
             const sf::Vector2f startPosition{ util::right(shipRect),
                                               (shipRect.top + (shipRect.height * 0.5f)) };
@@ -118,7 +118,7 @@ namespace blast4
         m_window.clear(m_context.settings.background_color);
 
         m_board.draw(m_context);
-        m_window.draw(m_context.images.shipSprite());
+        m_window.draw(m_starship.sprite());
         m_bullets.draw(m_context);
 
         m_window.display();
@@ -128,7 +128,7 @@ namespace blast4
     {
         const float moveAmount{ m_context.frame_time_sec * m_settings.ship_speed };
 
-        sf::Sprite & sprite = m_images.shipSprite();
+        sf::Sprite & sprite = m_starship.sprite();
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::I))

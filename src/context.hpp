@@ -12,18 +12,22 @@ namespace blast4
 {
 
     class Board;
-    class Images;
     class Bullets;
+    class Starship;
     struct Settings;
 
     struct Context
     {
         Context(
-            sf::RenderWindow & win, const Settings & set, Board & boa, Images & ima, Bullets & bul)
+            sf::RenderWindow & win,
+            const Settings & set,
+            Board & boa,
+            Starship & sta,
+            Bullets & bul)
             : window(win)
             , settings(set)
             , board(boa)
-            , images(ima)
+            , starship(sta)
             , bullets(bul)
             , frame_time_sec(0.0f)
         {}
@@ -31,7 +35,7 @@ namespace blast4
         sf::RenderWindow & window;
         const Settings & settings;
         Board & board;
-        Images & images;
+        Starship & starship;
         Bullets & bullets;
 
         float frame_time_sec;

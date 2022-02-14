@@ -4,8 +4,8 @@
 #include "board.hpp"
 #include "bullets.hpp"
 #include "context.hpp"
-#include "images.hpp"
 #include "settings.hpp"
+#include "starship.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
@@ -35,7 +35,7 @@ namespace blast4
         sf::RenderWindow m_window;
         Settings m_settings;
         Board m_board;
-        Images m_images;
+        Starship m_starship;
         Bullets m_bullets;
 
         Context m_context;
