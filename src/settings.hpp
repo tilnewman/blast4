@@ -18,6 +18,7 @@ namespace blast4
 
         float ship_size_ratio = 0.03f;
         float edge_pad_ratio = 0.05f;
+        float border_pad_ratio = 0.01f;
         float ship_speed = 125.0f;
         float bullet_speed = 300.0f;
         float bullet_radius_ship_ratio = 0.1f;
