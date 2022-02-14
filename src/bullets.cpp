@@ -3,6 +3,7 @@
 #include "board.hpp"
 #include "check-macros.hpp"
 #include "settings.hpp"
+#include "sound-player.hpp"
 #include "starship.hpp"
 #include "util.hpp"
 
@@ -24,23 +25,52 @@ namespace blast4
             bullet.shape.move(bullet.velocity * context.frame_time_sec);
         }
 
-        auto iter = m_bullets.begin();
-        while (iter != m_bullets.end())
+        for (Bullet & bullet : m_bullets)
         {
-            const Bullet & bullet = *iter;
-
-            const bool didHitWall{ context.board.isCollisionWithBoardEdge(
-                bullet.shape.getGlobalBounds()) };
-
-            if (didHitWall)
+            if (!bullet.is_alive)
             {
-                iter = m_bullets.erase(iter);
+                continue;
             }
-            else
+
+            if (context.board.isCollisionWithBoardEdge(bullet.shape.getGlobalBounds()))
             {
-                ++iter;
+                context.audio.play("bullet-hits-wall");
+                bullet.is_alive = false;
             }
         }
+
+        for (std::size_t outer = 0; outer < m_bullets.size(); ++outer)
+        {
+            Bullet & bulletOuter = m_bullets.at(outer);
+            if (!bulletOuter.is_alive)
+            {
+                continue;
+            }
+
+            for (std::size_t inner = (outer + 1); inner < m_bullets.size(); ++inner)
+            {
+                Bullet & bulletInner = m_bullets.at(inner);
+                if (!bulletInner.is_alive)
+                {
+                    continue;
+                }
+
+                if (bulletOuter.shape.getGlobalBounds().intersects(
+                        bulletInner.shape.getGlobalBounds()))
+                {
+                    context.audio.play("bullet-hits-bullet");
+                    bulletOuter.is_alive = false;
+                    bulletInner.is_alive = false;
+                }
+            }
+        }
+
+        m_bullets.erase(
+            std::remove_if(
+                std::begin(m_bullets),
+                std::end(m_bullets),
+                [](const Bullet & b) { return !b.is_alive; }),
+            std::end(m_bullets));
     }
 
     void Bullets::draw(Context & context) const
@@ -59,6 +89,7 @@ namespace blast4
     {
         Bullet bullet;
 
+        bullet.is_alive = true;
         bullet.velocity = (unit_velocity * context.settings.bullet_speed);
         bullet.shape.setFillColor(context.settings.bullet_color);
         bullet.shape.setOutlineColor(context.settings.bullet_color);
@@ -81,7 +112,7 @@ namespace blast4
         if (shooterBounds.intersects(bulletBounds) ||
             context.board.isCollisionWithBlock(bulletBounds))
         {
-            // TODO sfx reject shot
+            context.audio.play("bullet-hits-block");
             return false;
         }
         else

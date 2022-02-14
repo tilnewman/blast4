@@ -14,6 +14,7 @@ namespace blast4
 
     struct Bullet
     {
+        bool is_alive = false;
         sf::Vector2f velocity;
         sf::CircleShape shape;
     };

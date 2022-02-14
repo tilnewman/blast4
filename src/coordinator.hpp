@@ -4,7 +4,9 @@
 #include "board.hpp"
 #include "bullets.hpp"
 #include "context.hpp"
+#include "random.hpp"
 #include "settings.hpp"
+#include "sound-player.hpp"
 #include "starship.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -29,14 +31,14 @@ namespace blast4
         void update();
         void draw();
 
-        void moveShip();
-
       private:
+        util::Random m_random;
         sf::RenderWindow m_window;
         Settings m_settings;
         Board m_board;
         Starship m_starship;
         Bullets m_bullets;
+        util::SoundPlayer m_audio;
 
         Context m_context;
     };

@@ -4,6 +4,7 @@
 #include "bullets.hpp"
 #include "check-macros.hpp"
 #include "settings.hpp"
+#include "sound-player.hpp"
 #include "util.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -18,7 +19,7 @@ namespace blast4
 
     void Starship::setup(Context & context)
     {
-        m_texture.loadFromFile("media/image/ship.png");
+        m_texture.loadFromFile("media/image/player-ship.png");
         m_sprite.setTexture(m_texture);
         m_sprite.setColor(context.settings.ship_color);
         util::fit(m_sprite, (context.board.unitSize() * 0.9f));
@@ -132,7 +133,11 @@ namespace blast4
         {
             if (context.bullets.create(context, shipRect, startPosition, unitVelocity))
             {
-                // TODO sfx
+                context.audio.play("player-shoot");
+            }
+            else
+            {
+                context.audio.play("bullet-hits-block");
             }
         }
     }

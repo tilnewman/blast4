@@ -6,7 +6,13 @@
 namespace sf
 {
     class RenderWindow;
-}
+} // namespace sf
+
+namespace util
+{
+    class Random;
+    class SoundPlayer;
+} // namespace util
 
 namespace blast4
 {
@@ -19,24 +25,30 @@ namespace blast4
     struct Context
     {
         Context(
+            util::Random & ran,
             sf::RenderWindow & win,
             const Settings & set,
             Board & boa,
             Starship & sta,
-            Bullets & bul)
-            : window(win)
+            Bullets & bul,
+            util::SoundPlayer & sou)
+            : random(ran)
+            , window(win)
             , settings(set)
             , board(boa)
             , starship(sta)
             , bullets(bul)
+            , audio(sou)
             , frame_time_sec(0.0f)
         {}
 
+        util::Random & random;
         sf::RenderWindow & window;
         const Settings & settings;
         Board & board;
         Starship & starship;
         Bullets & bullets;
+        util::SoundPlayer & audio;
 
         float frame_time_sec;
     };

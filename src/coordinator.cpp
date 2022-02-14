@@ -7,12 +7,14 @@ namespace blast4
 {
 
     Coordinator::Coordinator(const Settings & settings)
-        : m_window()
+        : m_random()
+        , m_window()
         , m_settings(settings)
         , m_board()
         , m_starship()
         , m_bullets()
-        , m_context(m_window, m_settings, m_board, m_starship, m_bullets)
+        , m_audio(m_random)
+        , m_context(m_random, m_window, m_settings, m_board, m_starship, m_bullets, m_audio)
     {}
 
     void Coordinator::play()
@@ -23,6 +25,9 @@ namespace blast4
 
     void Coordinator::setup()
     {
+        m_audio.mediaPath("media/sound");
+        m_audio.loadAll();
+
         m_window.create(sf::VideoMode::getDesktopMode(), "Blast4", sf::Style::Fullscreen);
         M_CHECK(m_window.isOpen(), "Error:  Failed to open graphics window!");
 
@@ -73,6 +78,7 @@ namespace blast4
         if (sf::Keyboard::Escape == event.key.code)
         {
             m_window.close();
+            return;
         }
     }
 
