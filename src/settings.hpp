@@ -14,11 +14,13 @@ namespace blast4
         sf::Color ship_color = sf::Color(220, 220, 220);
         sf::Color bullet_color = sf::Color::White;
 
-        float unit_size_ratio = 0.03f;
+        sf::Vector2i block_count = { 9, 4 };
+
+        float ship_size_ratio = 0.03f;
         float edge_pad_ratio = 0.05f;
         float ship_speed = 125.0f;
         float bullet_speed = 300.0f;
-        float bullet_radius_unit_ratio = 0.1f;
+        float bullet_radius_ship_ratio = 0.1f;
         float bullet_shoot_delay_sec = 0.1f;
     };
 

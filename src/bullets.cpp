@@ -97,7 +97,7 @@ namespace blast4
         bullet.shape.setPointCount(10);
 
         const float radius =
-            (context.settings.bullet_radius_unit_ratio * context.board.unitSize().x);
+            (context.settings.bullet_radius_ship_ratio * context.board.shipSize().x);
 
         bullet.shape.setRadius(radius);
 

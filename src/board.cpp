@@ -10,7 +10,7 @@ namespace blast4
 
     Board::Board()
         : m_windowSize()
-        , m_unitSize(0.0f)
+        , m_shipLength(0.0f)
         , m_boardRect()
         , m_blockRects()
         , m_blockVerts()
@@ -23,55 +23,44 @@ namespace blast4
     void Board::setup(Context & context)
     {
         m_windowSize = sf::Vector2f{ context.window.getSize() };
-        m_unitSize = (m_windowSize.x * context.settings.unit_size_ratio);
-        m_unitSize = std::floor(m_unitSize);
 
-        // this initial board rect is only a temp estimate, see actual rect set below
+        // the width of halls between blocks is also the size of the player's spaceship
+        m_shipLength = (m_windowSize.x * context.settings.ship_size_ratio);
+        m_shipLength = std::floor(m_shipLength);
+
+        // full rect of the board
         const float pad = std::floor(m_windowSize.y * context.settings.edge_pad_ratio);
-        m_boardRect.top = pad;
-        m_boardRect.width = m_windowSize.x - (pad * 5.0f);
-        m_boardRect.height = m_windowSize.y - (pad * 2.0f);
+        m_boardRect.width = std::floor(m_windowSize.x - (pad * 4.0f));
         m_boardRect.left = ((m_windowSize.x * 0.5f) - (m_boardRect.width * 0.5f));
+        m_boardRect.height = std::floor(m_windowSize.y - (pad * 4.0f));
+        m_boardRect.top = (m_windowSize.y - (pad + m_boardRect.height));
 
         // blocks that make up the halls, or blocks the ship moves between
-        const sf::Vector2f blockSize{ std::floor(m_unitSize * 2.0f),
-                                      std::floor(m_unitSize * 3.0f) };
+        const sf::Vector2f blockCount{ context.settings.block_count };
+
+        const sf::Vector2f shipHallSizeTotals{ ((blockCount.x + 1.0f) * m_shipLength),
+                                               (blockCount.y + 1.0f) * m_shipLength };
+
+        const sf::Vector2f blockSize{ (util::size(m_boardRect) - shipHallSizeTotals) / blockCount };
 
         std::vector<sf::Vector2f> blockPositions;
-
-        sf::Vector2f extents{ 0.0f, 0.0f };
+        for (int y = 0; y < context.settings.block_count.y; ++y)
         {
-            sf::Vector2f pos{ 0.0f, 0.0f };
-            while (pos.y < (m_boardRect.height - blockSize.y))
+            for (int x = 0; x < context.settings.block_count.x; ++x)
             {
-                while (pos.x < (m_boardRect.width - blockSize.x))
-                {
-                    blockPositions.push_back(pos);
-                    pos.x += blockSize.x;
-                    pos.x += m_unitSize;
-                    extents.x = pos.x;
-                }
+                sf::Vector2f pos{ util::position(m_boardRect) + shipSize() };
 
-                pos.x = 0.0f;
+                pos.x += (static_cast<float>(x) * (blockSize.x + m_shipLength));
+                pos.y += (static_cast<float>(y) * (blockSize.y + m_shipLength));
 
-                pos.y += blockSize.y;
-                pos.y += m_unitSize;
-                extents.y = pos.y;
+                blockPositions.push_back(pos);
             }
         }
 
-        // set the actual board rect based on the number of blocks that fit the estimate above
-        const sf::Vector2f boardSize{ (extents.x + m_unitSize), (extents.y + m_unitSize) };
-        const sf::Vector2f boardPos = ((m_windowSize * 0.5f) - (boardSize * 0.5f));
-        m_boardRect = { boardPos, boardSize };
-
-        // verts
+        // verts that draw the board
         for (const sf::Vector2f & blockPosition : blockPositions)
         {
-            const sf::FloatRect blockRect{
-                (boardPos + blockPosition + sf::Vector2f{ m_unitSize, m_unitSize }), blockSize
-            };
-
+            const sf::FloatRect blockRect{ blockPosition, blockSize };
             util::appendQuadVerts(blockRect, m_blockVerts, context.settings.block_color);
             m_blockRects.push_back(blockRect);
         }
@@ -94,18 +83,18 @@ namespace blast4
         float lane = m_boardRect.left;
         while (lane < m_boardRect.width)
         {
-            lane += (m_unitSize * 0.5f);
+            lane += (m_shipLength * 0.5f);
             m_horizLanes.push_back(lane);
-            lane += (m_unitSize * 0.5f);
+            lane += (m_shipLength * 0.5f);
             lane += blockSize.x;
         }
 
         lane = m_boardRect.top;
         while (lane < m_boardRect.height)
         {
-            lane += (m_unitSize * 0.5f);
+            lane += (m_shipLength * 0.5f);
             m_vertLanes.push_back(lane);
-            lane += (m_unitSize * 0.5f);
+            lane += (m_shipLength * 0.5f);
             lane += blockSize.y;
         }
     }

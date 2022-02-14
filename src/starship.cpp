@@ -22,7 +22,7 @@ namespace blast4
         m_texture.loadFromFile("media/image/player-ship.png");
         m_sprite.setTexture(m_texture);
         m_sprite.setColor(context.settings.ship_color);
-        util::fit(m_sprite, (context.board.unitSize() * 0.9f));
+        util::fit(m_sprite, (context.board.shipSize() * 0.9f));
         util::setOriginToCenter(m_sprite);
         m_sprite.setPosition(context.board.startPosition());
     }

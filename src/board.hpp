@@ -28,7 +28,7 @@ namespace blast4
             return { m_horizLanes.at(0), m_vertLanes.at(0) };
         }
 
-        const sf::Vector2f unitSize() const { return { m_unitSize, m_unitSize }; }
+        const sf::Vector2f shipSize() const { return { m_shipLength, m_shipLength }; }
 
         float findLaneHoriz(const float position) const
         {
@@ -48,7 +48,7 @@ namespace blast4
 
       private:
         sf::Vector2f m_windowSize;
-        float m_unitSize = 0.0f;
+        float m_shipLength = 0.0f;
         sf::FloatRect m_boardRect;
         std::vector<sf::FloatRect> m_blockRects;
 
