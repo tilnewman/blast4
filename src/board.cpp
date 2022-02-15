@@ -29,11 +29,13 @@ namespace blast4
         m_shipLength = std::floor(m_shipLength);
 
         // full rect of the board
-        const float pad = std::floor(m_windowSize.y * context.settings.edge_pad_ratio);
-        m_boardRect.width = std::floor(m_windowSize.x - (pad * 4.0f));
-        m_boardRect.left = ((m_windowSize.x * 0.5f) - (m_boardRect.width * 0.5f));
-        m_boardRect.height = std::floor(m_windowSize.y - (pad * 4.0f));
-        m_boardRect.top = (m_windowSize.y - (pad + m_boardRect.height));
+        {
+            const float pad = std::floor(m_windowSize.y * context.settings.edge_pad_ratio);
+            m_boardRect.width = std::floor(m_windowSize.x - (pad * 4.0f));
+            m_boardRect.left = ((m_windowSize.x * 0.5f) - (m_boardRect.width * 0.5f));
+            m_boardRect.height = std::floor(m_windowSize.y - (pad * 4.0f));
+            m_boardRect.top = (m_windowSize.y - (pad + m_boardRect.height));
+        }
 
         // blocks that make up the halls, or blocks the ship moves between
         const sf::Vector2f blockCount{ context.settings.block_count };
@@ -65,21 +67,52 @@ namespace blast4
             m_blockRects.push_back(blockRect);
         }
 
-        m_borderVerts.resize(
-            5, sf::Vertex(util::position(m_boardRect), context.settings.block_color));
+        m_backgroundVerts.resize(
+            4, sf::Vertex(util::position(m_boardRect), context.settings.board_color));
 
-        m_borderVerts[1].position += { m_boardRect.width, 0.0f };
-        m_borderVerts[2].position += { m_boardRect.width, m_boardRect.height };
-        m_borderVerts[3].position += { 0.0f, m_boardRect.height };
+        m_backgroundVerts[1].position += { m_boardRect.width, 0.0f };
+        m_backgroundVerts[2].position += { m_boardRect.width, m_boardRect.height };
+        m_backgroundVerts[3].position += { 0.0f, m_boardRect.height };
 
-        m_backgroundVerts = m_borderVerts;
-        m_backgroundVerts[0].color = context.settings.board_color;
-        m_backgroundVerts[1].color = context.settings.board_color;
-        m_backgroundVerts[2].color = context.settings.board_color;
-        m_backgroundVerts[3].color = context.settings.board_color;
-        m_backgroundVerts.pop_back();
+        {
+            const sf::Vector2f pos = util::position(m_boardRect);
+            const float pad = (m_windowSize.x * context.settings.border_pad_ratio);
 
-        // possible lanes of movement
+            m_borderVerts.push_back({ { pos.x - pad, pos.y - pad } });
+            m_borderVerts.push_back({ { (pos.x + m_boardRect.width + pad), pos.y - pad } });
+            m_borderVerts.push_back({ { (pos.x + m_boardRect.width + pad), pos.y } });
+            m_borderVerts.push_back({ { pos.x - pad, pos.y } });
+            //
+            m_borderVerts.push_back({ { pos.x + m_boardRect.width, pos.y - pad } });
+            m_borderVerts.push_back({ { (pos.x + m_boardRect.width + pad), pos.y - pad } });
+
+            m_borderVerts.push_back(
+                { { (pos.x + m_boardRect.width + pad), (pos.y + m_boardRect.height + pad) } });
+
+            m_borderVerts.push_back(
+                { { (pos.x + m_boardRect.width), (pos.y + m_boardRect.height + pad) } });
+            //
+            m_borderVerts.push_back({ { pos.x - pad, (pos.y + m_boardRect.height) } });
+
+            m_borderVerts.push_back(
+                { { (pos.x + m_boardRect.width + pad), (pos.y + m_boardRect.height) } });
+
+            m_borderVerts.push_back(
+                { { (pos.x + m_boardRect.width + pad), (pos.y + m_boardRect.height + pad) } });
+            m_borderVerts.push_back({ { pos.x - pad, (pos.y + m_boardRect.height + pad) } });
+            //
+            m_borderVerts.push_back({ { pos.x - pad, pos.y - pad } });
+            m_borderVerts.push_back({ { pos.x, pos.y - pad } });
+            m_borderVerts.push_back({ { pos.x, (pos.y + m_boardRect.height + pad) } });
+            m_borderVerts.push_back({ { (pos.x - pad), (pos.y + m_boardRect.height + pad) } });
+
+            for (sf::Vertex & vert : m_borderVerts)
+            {
+                vert.color = context.settings.block_color;
+            }
+        }
+
+        // possible lanes (lines) of movement represented by horiz or vert values
         float lane = m_boardRect.left;
         while (lane < m_boardRect.width)
         {
@@ -102,7 +135,7 @@ namespace blast4
     void Board::draw(Context & context) const
     {
         context.window.draw(&m_backgroundVerts[0], m_backgroundVerts.size(), sf::Quads);
-        context.window.draw(&m_borderVerts[0], m_borderVerts.size(), sf::LinesStrip);
+        context.window.draw(&m_borderVerts[0], m_borderVerts.size(), sf::Quads);
         context.window.draw(&m_blockVerts[0], m_blockVerts.size(), sf::Quads);
     }
 
