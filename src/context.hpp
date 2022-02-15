@@ -21,6 +21,8 @@ namespace blast4
     class Bullets;
     class Starship;
     class TopPanel;
+
+    struct Game;
     struct Settings;
 
     struct Context
@@ -29,6 +31,7 @@ namespace blast4
             util::Random & ran,
             sf::RenderWindow & win,
             const Settings & set,
+            Game & gam,
             Board & boa,
             TopPanel & top,
             Starship & sta,
@@ -37,6 +40,7 @@ namespace blast4
             : random(ran)
             , window(win)
             , settings(set)
+            , game(gam)
             , board(boa)
             , panel(top)
             , starship(sta)
@@ -48,6 +52,7 @@ namespace blast4
         util::Random & random;
         sf::RenderWindow & window;
         const Settings & settings;
+        Game & game;
         Board & board;
         TopPanel & panel;
         Starship & starship;

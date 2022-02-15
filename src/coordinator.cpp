@@ -10,13 +10,22 @@ namespace blast4
         : m_random()
         , m_window()
         , m_settings(settings)
+        , m_game()
         , m_board()
         , m_panel()
         , m_starship()
         , m_bullets()
         , m_audio(m_random)
         , m_context(
-              m_random, m_window, m_settings, m_board, m_panel, m_starship, m_bullets, m_audio)
+              m_random,
+              m_window,
+              m_settings,
+              m_game,
+              m_board,
+              m_panel,
+              m_starship,
+              m_bullets,
+              m_audio)
     {}
 
     void Coordinator::play()
@@ -40,6 +49,8 @@ namespace blast4
         m_panel.setup(m_context);
         m_starship.setup(m_context);
         m_bullets.setup(m_context);
+
+        m_game.ammo = m_settings.starting_ammo;
     }
 
     void Coordinator::loop()
@@ -90,6 +101,7 @@ namespace blast4
     {
         m_starship.update(m_context);
         m_bullets.update(m_context);
+        m_panel.update(m_context);
     }
 
     void Coordinator::draw()

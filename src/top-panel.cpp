@@ -1,6 +1,7 @@
 #include "top-panel.hpp"
 
 #include "board.hpp"
+#include "game.hpp"
 #include "settings.hpp"
 #include "util.hpp"
 
@@ -48,7 +49,7 @@ namespace blast4
         util::fitAndCenterInside(m_titleText, m_titleRect);
         m_titleText.setPosition(m_titleText.getPosition().x, m_titleRect.top);
 
-        m_ammoRect.left = (m_boardRect.left - boardBorderPad);
+        m_ammoRect.left = m_boardRect.left;
         m_ammoRect.width = (m_windowSize.x * 0.5f);
         m_ammoRect.height = (m_windowSize.y * context.settings.text_size_ratio);
         m_ammoRect.top = (m_boardRect.top - (boardBorderPad + m_ammoRect.height));
@@ -64,6 +65,21 @@ namespace blast4
         m_scoreRect = m_ammoRect;
 
         m_scoreText = m_ammoText;
+    }
+
+    void TopPanel::update(Context & context)
+    {
+        m_ammoText.setString(std::to_string(context.game.ammo));
+        util::setOriginToPosition(m_ammoText);
+        util::fit(m_ammoText, m_ammoRect);
+        m_ammoText.setPosition(util::position(m_ammoRect));
+
+        m_scoreText.setString(std::to_string(context.game.score));
+        util::setOriginToPosition(m_scoreText);
+        util::fit(m_scoreText, m_scoreRect);
+
+        m_scoreText.setPosition(
+            (util::right(m_boardRect) - m_scoreText.getGlobalBounds().width), m_scoreRect.top);
     }
 
     void TopPanel::draw(Context & context) const

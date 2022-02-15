@@ -2,6 +2,7 @@
 #define BLAST4_SETTINGS_HPP
 
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/System/Vector2.hpp>
 
 namespace blast4
 {
@@ -26,6 +27,8 @@ namespace blast4
         float bullet_radius_ship_ratio = 0.1f;
         float bullet_shoot_delay_sec = 0.1f;
         float text_size_ratio = 0.05f;
+
+        int starting_ammo = 10;
     };
 
 } // namespace blast4

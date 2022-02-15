@@ -3,6 +3,7 @@
 #include "board.hpp"
 #include "bullets.hpp"
 #include "check-macros.hpp"
+#include "game.hpp"
 #include "settings.hpp"
 #include "sound-player.hpp"
 #include "util.hpp"
@@ -131,9 +132,16 @@ namespace blast4
 
         if (didShoot)
         {
+            if (context.game.ammo <= 0)
+            {
+                context.audio.play("no-more-bullets");
+                return;
+            }
+
             if (context.bullets.create(context, shipRect, startPosition, unitVelocity))
             {
                 context.audio.play("player-shoot");
+                --context.game.ammo;
             }
             else
             {

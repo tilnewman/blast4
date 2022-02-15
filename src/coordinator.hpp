@@ -4,6 +4,7 @@
 #include "board.hpp"
 #include "bullets.hpp"
 #include "context.hpp"
+#include "game.hpp"
 #include "random.hpp"
 #include "settings.hpp"
 #include "sound-player.hpp"
@@ -36,6 +37,7 @@ namespace blast4
         util::Random m_random;
         sf::RenderWindow m_window;
         Settings m_settings;
+        Game m_game;
         Board m_board;
         TopPanel m_panel;
         Starship m_starship;

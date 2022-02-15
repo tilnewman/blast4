@@ -21,6 +21,7 @@ namespace blast4
         TopPanel();
 
         void setup(Context & context);
+        void update(Context & context);
         void draw(Context & context) const;
 
       private:
