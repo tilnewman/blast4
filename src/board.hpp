@@ -23,15 +23,15 @@ namespace blast4
 
         const sf::FloatRect rect() const { return m_boardRect; }
 
-        const sf::Vector2f startPosition() const
-        {
-            return { m_horizLaneLines.at(4), m_vertLaneLines.at(2) };
-        }
-
         const sf::Vector2f shipSize() const { return { m_shipLength, m_shipLength }; }
 
         bool isCollisionWithBlock(const sf::FloatRect & rect) const;
         bool isCollisionWithBoardEdge(const sf::FloatRect & rect) const;
+
+        bool isCollision(const sf::FloatRect & rect) const
+        {
+            return (isCollisionWithBlock(rect) || isCollisionWithBoardEdge(rect));
+        }
 
         float findLaneLineHoriz(const float position) const
         {
@@ -52,6 +52,8 @@ namespace blast4
         {
             return findLane(m_vertLanes, rect);
         }
+
+        const sf::Vector2f randomPosition(const Context & context) const;
 
       private:
         float findLaneLine(const std::vector<float> & lines, const float position) const;

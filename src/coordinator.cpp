@@ -15,6 +15,7 @@ namespace blast4
         , m_panel()
         , m_starship()
         , m_bullets()
+        , m_aliens()
         , m_audio(m_random)
         , m_context(
               m_random,
@@ -25,6 +26,7 @@ namespace blast4
               m_panel,
               m_starship,
               m_bullets,
+              m_aliens,
               m_audio)
     {}
 
@@ -49,6 +51,7 @@ namespace blast4
         m_panel.setup(m_context);
         m_starship.setup(m_context);
         m_bullets.setup(m_context);
+        m_aliens.setup(m_context);
 
         m_game.ammo = m_settings.starting_ammo;
     }
@@ -100,6 +103,7 @@ namespace blast4
     void Coordinator::update()
     {
         m_starship.update(m_context);
+        m_aliens.update(m_context);
         m_bullets.update(m_context);
         m_panel.update(m_context);
     }
@@ -110,6 +114,7 @@ namespace blast4
 
         m_board.draw(m_context);
         m_panel.draw(m_context);
+        m_aliens.draw(m_context);
         m_starship.draw(m_context);
         m_bullets.draw(m_context);
 

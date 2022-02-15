@@ -1,5 +1,6 @@
 #include "board.hpp"
 
+#include "random.hpp"
 #include "settings.hpp"
 #include "util.hpp"
 
@@ -223,6 +224,30 @@ namespace blast4
         }
 
         return { 0.0f, 0.0f, 0.0f, 0.0f };
+    }
+
+    const sf::Vector2f Board::randomPosition(const Context & context) const
+    {
+        sf::Vector2f position;
+
+        if (context.random.boolean())
+        {
+            position.x = context.random.from(m_horizLaneLines);
+
+            position.y = context.random.fromTo(
+                (m_boardRect.top + m_shipLength), (util::bottom(m_boardRect) - m_shipLength));
+        }
+        else
+        {
+            position.y = context.random.from(m_vertLaneLines);
+
+            position.x = context.random.fromTo(
+                (m_boardRect.left + m_shipLength), (util::right(m_boardRect) - m_shipLength));
+        }
+
+        // TODO check if collides with player or other aliens
+
+        return position;
     }
 
 } // namespace blast4

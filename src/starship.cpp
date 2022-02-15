@@ -25,7 +25,7 @@ namespace blast4
         m_sprite.setColor(context.settings.ship_color);
         util::fit(m_sprite, (context.board.shipSize() * 0.9f));
         util::setOriginToCenter(m_sprite);
-        m_sprite.setPosition(context.board.startPosition());
+        m_sprite.setPosition(context.board.randomPosition(context));
     }
 
     void Starship::update(Context & context)
@@ -37,8 +37,7 @@ namespace blast4
         {
             m_sprite.move(0.0f, -moveAmount);
 
-            if (context.board.isCollisionWithBlock(m_sprite.getGlobalBounds()) ||
-                context.board.isCollisionWithBoardEdge(m_sprite.getGlobalBounds()))
+            if (context.board.isCollision(m_sprite.getGlobalBounds()))
             {
                 m_sprite.move(0.0f, moveAmount);
             }
@@ -49,8 +48,7 @@ namespace blast4
         {
             m_sprite.move(0.0f, moveAmount);
 
-            if (context.board.isCollisionWithBlock(m_sprite.getGlobalBounds()) ||
-                context.board.isCollisionWithBoardEdge(m_sprite.getGlobalBounds()))
+            if (context.board.isCollision(m_sprite.getGlobalBounds()))
             {
                 m_sprite.move(0.0f, -moveAmount);
             }
@@ -61,8 +59,7 @@ namespace blast4
         {
             m_sprite.move(moveAmount, 0.0f);
 
-            if (context.board.isCollisionWithBlock(m_sprite.getGlobalBounds()) ||
-                context.board.isCollisionWithBoardEdge(m_sprite.getGlobalBounds()))
+            if (context.board.isCollision(m_sprite.getGlobalBounds()))
             {
                 m_sprite.move(-moveAmount, 0.0f);
             }
@@ -73,8 +70,7 @@ namespace blast4
         {
             m_sprite.move(-moveAmount, 0.0f);
 
-            if (context.board.isCollisionWithBlock(m_sprite.getGlobalBounds()) ||
-                context.board.isCollisionWithBoardEdge(m_sprite.getGlobalBounds()))
+            if (context.board.isCollision(m_sprite.getGlobalBounds()))
             {
                 m_sprite.move(moveAmount, 0.0f);
             }

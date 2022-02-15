@@ -27,6 +27,8 @@ namespace blast4
             return m_sprite.getGlobalBounds().intersects(rect);
         }
 
+        const sf::FloatRect globalBounds() const { return m_sprite.getGlobalBounds(); }
+
       private:
         sf::Texture m_texture;
         sf::Sprite m_sprite;

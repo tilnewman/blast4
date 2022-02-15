@@ -18,6 +18,7 @@ namespace blast4
 {
 
     class Board;
+    class Aliens;
     class Bullets;
     class Starship;
     class TopPanel;
@@ -36,6 +37,7 @@ namespace blast4
             TopPanel & top,
             Starship & sta,
             Bullets & bul,
+            Aliens & ali,
             util::SoundPlayer & sou)
             : random(ran)
             , window(win)
@@ -45,6 +47,7 @@ namespace blast4
             , panel(top)
             , starship(sta)
             , bullets(bul)
+            , aliens(ali)
             , audio(sou)
             , frame_time_sec(0.0f)
         {}
@@ -57,6 +60,7 @@ namespace blast4
         TopPanel & panel;
         Starship & starship;
         Bullets & bullets;
+        Aliens & aliens;
         util::SoundPlayer & audio;
 
         float frame_time_sec;

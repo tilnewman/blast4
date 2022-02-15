@@ -1,6 +1,7 @@
 #ifndef BLAST4_COORDINATOR_HPP
 #define BLAST4_COORDINATOR_HPP
 
+#include "aliens.hpp"
 #include "board.hpp"
 #include "bullets.hpp"
 #include "context.hpp"
@@ -42,6 +43,7 @@ namespace blast4
         TopPanel m_panel;
         Starship m_starship;
         Bullets m_bullets;
+        Aliens m_aliens;
         util::SoundPlayer m_audio;
 
         Context m_context;
