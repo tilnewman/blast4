@@ -110,7 +110,8 @@ namespace blast4
         const sf::FloatRect bulletBounds = bullet.shape.getGlobalBounds();
 
         if (shooterBounds.intersects(bulletBounds) ||
-            context.board.isCollisionWithBlock(bulletBounds))
+            context.board.isCollisionWithBlock(bulletBounds) ||
+            context.board.isCollisionWithBoardEdge(bulletBounds))
         {
             context.audio.play("bullet-hits-block");
             return false;
