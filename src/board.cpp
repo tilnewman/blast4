@@ -18,6 +18,8 @@ namespace blast4
         , m_backgroundVerts()
         , m_horizLanes()
         , m_vertLanes()
+        , m_horizLaneLines()
+        , m_vertLaneLines()
     {}
 
     void Board::setup(Context & context)
@@ -112,12 +114,12 @@ namespace blast4
             }
         }
 
-        // possible lanes (lines) of movement represented by horiz or vert values
+        // possible lanes lines of movement
         float lane = m_boardRect.left;
         while (lane < m_boardRect.width)
         {
             lane += (m_shipLength * 0.5f);
-            m_horizLanes.push_back(lane);
+            m_horizLaneLines.push_back(lane);
             lane += (m_shipLength * 0.5f);
             lane += blockSize.x;
         }
@@ -126,9 +128,26 @@ namespace blast4
         while (lane < m_boardRect.height)
         {
             lane += (m_shipLength * 0.5f);
-            m_vertLanes.push_back(lane);
+            m_vertLaneLines.push_back(lane);
             lane += (m_shipLength * 0.5f);
             lane += blockSize.y;
+        }
+
+        // possible lanes of movement
+        for (int y = 0; y < (context.settings.block_count.y + 1); ++y)
+        {
+            sf::FloatRect rect = m_boardRect;
+            rect.top = m_boardRect.top + (static_cast<float>(y) * (m_shipLength + blockSize.y));
+            rect.height = m_shipLength;
+            m_horizLanes.push_back(rect);
+        }
+
+        for (int x = 0; x < (context.settings.block_count.x + 1); ++x)
+        {
+            sf::FloatRect rect = m_boardRect;
+            rect.left = m_boardRect.left + (static_cast<float>(x) * (m_shipLength + blockSize.x));
+            rect.width = m_shipLength;
+            m_vertLanes.push_back(rect);
         }
     }
 
@@ -137,21 +156,6 @@ namespace blast4
         context.window.draw(&m_backgroundVerts[0], m_backgroundVerts.size(), sf::Quads);
         context.window.draw(&m_borderVerts[0], m_borderVerts.size(), sf::Quads);
         context.window.draw(&m_blockVerts[0], m_blockVerts.size(), sf::Quads);
-    }
-
-    float Board::findFirstWithinRange(const std::vector<float> & lanes, const float position) const
-    {
-        for (const float lane : lanes)
-        {
-            const float diff{ util::abs(position - lane) };
-
-            if (diff < 2.0f)
-            {
-                return lane;
-            }
-        }
-
-        return -1.0f;
     }
 
     bool Board::isCollisionWithBlock(const sf::FloatRect & rect) const
@@ -190,6 +194,35 @@ namespace blast4
         }
 
         return false;
+    }
+
+    float Board::findLaneLine(const std::vector<float> & lines, const float position) const
+    {
+        for (const float line : lines)
+        {
+            const float diff{ util::abs(position - line) };
+
+            if (diff < 2.0f)
+            {
+                return line;
+            }
+        }
+
+        return -1.0f;
+    }
+
+    const sf::FloatRect
+        Board::findLane(const std::vector<sf::FloatRect> & lanes, const sf::FloatRect & rect) const
+    {
+        for (const sf::FloatRect & laneRect : lanes)
+        {
+            if (laneRect.intersects(rect))
+            {
+                return laneRect;
+            }
+        }
+
+        return { 0.0f, 0.0f, 0.0f, 0.0f };
     }
 
 } // namespace blast4

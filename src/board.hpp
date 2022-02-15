@@ -25,26 +25,39 @@ namespace blast4
 
         const sf::Vector2f startPosition() const
         {
-            return { m_horizLanes.at(4), m_vertLanes.at(2) };
+            return { m_horizLaneLines.at(4), m_vertLaneLines.at(2) };
         }
 
         const sf::Vector2f shipSize() const { return { m_shipLength, m_shipLength }; }
 
-        float findLaneHoriz(const float position) const
-        {
-            return findFirstWithinRange(m_horizLanes, position);
-        }
-
-        float findLaneVert(const float position) const
-        {
-            return findFirstWithinRange(m_vertLanes, position);
-        }
-
         bool isCollisionWithBlock(const sf::FloatRect & rect) const;
         bool isCollisionWithBoardEdge(const sf::FloatRect & rect) const;
 
+        float findLaneLineHoriz(const float position) const
+        {
+            return findLaneLine(m_horizLaneLines, position);
+        }
+
+        float findLaneLineVert(const float position) const
+        {
+            return findLaneLine(m_vertLaneLines, position);
+        }
+
+        const sf::FloatRect findLaneHoriz(const sf::FloatRect & rect) const
+        {
+            return findLane(m_horizLanes, rect);
+        }
+
+        const sf::FloatRect findLaneVert(const sf::FloatRect & rect) const
+        {
+            return findLane(m_vertLanes, rect);
+        }
+
       private:
-        float findFirstWithinRange(const std::vector<float> & lanes, const float position) const;
+        float findLaneLine(const std::vector<float> & lines, const float position) const;
+
+        const sf::FloatRect
+            findLane(const std::vector<sf::FloatRect> & lanes, const sf::FloatRect & rect) const;
 
       private:
         sf::Vector2f m_windowSize;
@@ -56,8 +69,11 @@ namespace blast4
         std::vector<sf::Vertex> m_borderVerts;
         std::vector<sf::Vertex> m_backgroundVerts;
 
-        std::vector<float> m_horizLanes;
-        std::vector<float> m_vertLanes;
+        std::vector<sf::FloatRect> m_horizLanes;
+        std::vector<sf::FloatRect> m_vertLanes;
+
+        std::vector<float> m_horizLaneLines;
+        std::vector<float> m_vertLaneLines;
     };
 
 } // namespace blast4
