@@ -1,7 +1,10 @@
 #include "board.hpp"
 
+#include "aliens.hpp"
+#include "check-macros.hpp"
 #include "random.hpp"
 #include "settings.hpp"
+#include "starship.hpp"
 #include "util.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -226,28 +229,34 @@ namespace blast4
         return { 0.0f, 0.0f, 0.0f, 0.0f };
     }
 
-    const sf::Vector2f Board::randomPosition(const Context & context) const
+    const sf::Vector2f Board::randomFreePosition(const Context & context) const
     {
-        sf::Vector2f position;
+        std::vector<sf::Vector2f> positions;
 
-        if (context.random.boolean())
+        for (const float vertLane : m_vertLaneLines)
         {
-            position.x = context.random.from(m_horizLaneLines);
+            for (const float horizLane : m_horizLaneLines)
+            {
+                const sf::Vector2f position{ horizLane, vertLane };
+                const sf::FloatRect rect{ position - (shipSize() * 0.5f), shipSize() };
 
-            position.y = context.random.fromTo(
-                (m_boardRect.top + m_shipLength), (util::bottom(m_boardRect) - m_shipLength));
+                if (context.aliens.isCollision(rect))
+                {
+                    continue;
+                }
+
+                if (context.starship.intersects(rect))
+                {
+                    continue;
+                }
+
+                positions.push_back(position);
+            }
         }
-        else
-        {
-            position.y = context.random.from(m_vertLaneLines);
 
-            position.x = context.random.fromTo(
-                (m_boardRect.left + m_shipLength), (util::right(m_boardRect) - m_shipLength));
-        }
+        M_CHECK(!positions.empty(), "Error:  No free places to spawn on the board!");
 
-        // TODO check if collides with player or other aliens
-
-        return position;
+        return context.random.from(positions);
     }
 
 } // namespace blast4

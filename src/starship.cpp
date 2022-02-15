@@ -25,7 +25,7 @@ namespace blast4
         m_sprite.setColor(context.settings.ship_color);
         util::fit(m_sprite, (context.board.shipSize() * 0.9f));
         util::setOriginToCenter(m_sprite);
-        m_sprite.setPosition(context.board.randomPosition(context));
+        m_sprite.setPosition(context.board.randomFreePosition(context));
     }
 
     void Starship::update(Context & context)

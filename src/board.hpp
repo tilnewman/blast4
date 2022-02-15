@@ -53,7 +53,7 @@ namespace blast4
             return findLane(m_vertLanes, rect);
         }
 
-        const sf::Vector2f randomPosition(const Context & context) const;
+        const sf::Vector2f randomFreePosition(const Context & context) const;
 
       private:
         float findLaneLine(const std::vector<float> & lines, const float position) const;

@@ -30,6 +30,14 @@ namespace blast4
 
         // TODO remove after testing
         placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
     }
 
     void Aliens::update(Context & context)
@@ -104,10 +112,10 @@ namespace blast4
         // clang-format off
         switch (context.random.fromTo(1, 3))
         {
-            case 1:  { alien.sprite.setTexture(m_texture1); }
-            case 2:  { alien.sprite.setTexture(m_texture2); }
+            case 1:  { alien.sprite.setTexture(m_texture1); break; }
+            case 2:  { alien.sprite.setTexture(m_texture2); break; }
             case 3:
-            default: { alien.sprite.setTexture(m_texture3); }
+            default: { alien.sprite.setTexture(m_texture3); break; }
         };
         //clang-format on
 
@@ -115,10 +123,22 @@ namespace blast4
         util::fit(alien.sprite, (context.board.shipSize() * 0.9f));
         util::setOriginToCenter(alien.sprite);
         
-        alien.sprite.setPosition(context.board.randomPosition(context));
+        alien.sprite.setPosition(context.board.randomFreePosition(context));
 
         m_aliens.push_back(alien);
     }
 
+    bool Aliens::isCollision(const sf::FloatRect & rect) const
+    {
+        for (const Alien & alien : m_aliens)
+        {
+            if (alien.sprite.getGlobalBounds().intersects(rect))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 } // namespace blast4
