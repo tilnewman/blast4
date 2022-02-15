@@ -37,7 +37,7 @@ namespace blast4
             m_boardRect.top = (m_windowSize.y - (pad + m_boardRect.height));
         }
 
-        // blocks that make up the halls, or blocks the ship moves between
+        // blocks that make up the halls, that the ships moves between
         const sf::Vector2f blockCount{ context.settings.block_count };
 
         const sf::Vector2f shipHallSizeTotals{ ((blockCount.x + 1.0f) * m_shipLength),

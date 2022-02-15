@@ -25,7 +25,7 @@ namespace blast4
 
         const sf::Vector2f startPosition() const
         {
-            return { m_horizLanes.at(0), m_vertLanes.at(0) };
+            return { m_horizLanes.at(4), m_vertLanes.at(2) };
         }
 
         const sf::Vector2f shipSize() const { return { m_shipLength, m_shipLength }; }

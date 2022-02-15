@@ -11,10 +11,12 @@ namespace blast4
         , m_window()
         , m_settings(settings)
         , m_board()
+        , m_panel()
         , m_starship()
         , m_bullets()
         , m_audio(m_random)
-        , m_context(m_random, m_window, m_settings, m_board, m_starship, m_bullets, m_audio)
+        , m_context(
+              m_random, m_window, m_settings, m_board, m_panel, m_starship, m_bullets, m_audio)
     {}
 
     void Coordinator::play()
@@ -32,8 +34,10 @@ namespace blast4
         M_CHECK(m_window.isOpen(), "Error:  Failed to open graphics window!");
 
         m_window.setKeyRepeatEnabled(false);
+        m_window.setMouseCursorVisible(false);
 
         m_board.setup(m_context);
+        m_panel.setup(m_context);
         m_starship.setup(m_context);
         m_bullets.setup(m_context);
     }
@@ -93,6 +97,7 @@ namespace blast4
         m_window.clear(m_context.settings.background_color);
 
         m_board.draw(m_context);
+        m_panel.draw(m_context);
         m_starship.draw(m_context);
         m_bullets.draw(m_context);
 

@@ -20,6 +20,7 @@ namespace blast4
     class Board;
     class Bullets;
     class Starship;
+    class TopPanel;
     struct Settings;
 
     struct Context
@@ -29,6 +30,7 @@ namespace blast4
             sf::RenderWindow & win,
             const Settings & set,
             Board & boa,
+            TopPanel & top,
             Starship & sta,
             Bullets & bul,
             util::SoundPlayer & sou)
@@ -36,6 +38,7 @@ namespace blast4
             , window(win)
             , settings(set)
             , board(boa)
+            , panel(top)
             , starship(sta)
             , bullets(bul)
             , audio(sou)
@@ -46,6 +49,7 @@ namespace blast4
         sf::RenderWindow & window;
         const Settings & settings;
         Board & board;
+        TopPanel & panel;
         Starship & starship;
         Bullets & bullets;
         util::SoundPlayer & audio;

@@ -13,6 +13,8 @@ namespace blast4
         sf::Color block_color = sf::Color(45, 55, 60);
         sf::Color ship_color = sf::Color(220, 220, 220);
         sf::Color bullet_color = sf::Color::White;
+        sf::Color title_color = sf::Color(220, 220, 255);
+        sf::Color text_color = sf::Color(100, 100, 200);
 
         sf::Vector2i block_count = { 9, 4 };
 
@@ -23,6 +25,7 @@ namespace blast4
         float bullet_speed = 300.0f;
         float bullet_radius_ship_ratio = 0.1f;
         float bullet_shoot_delay_sec = 0.1f;
+        float text_size_ratio = 0.05f;
     };
 
 } // namespace blast4

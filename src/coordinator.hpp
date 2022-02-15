@@ -8,6 +8,7 @@
 #include "settings.hpp"
 #include "sound-player.hpp"
 #include "starship.hpp"
+#include "top-panel.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
@@ -36,6 +37,7 @@ namespace blast4
         sf::RenderWindow m_window;
         Settings m_settings;
         Board m_board;
+        TopPanel m_panel;
         Starship m_starship;
         Bullets m_bullets;
         util::SoundPlayer m_audio;
