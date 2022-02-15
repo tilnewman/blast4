@@ -10,7 +10,7 @@ namespace blast4
     {
         sf::Color background_color = sf::Color(27, 31, 35);
         sf::Color board_color = sf::Color::Black;
-        sf::Color block_color = background_color + sf::Color(100, 100, 120);
+        sf::Color block_color = sf::Color(45, 55, 60);
         sf::Color ship_color = sf::Color(220, 220, 220);
         sf::Color bullet_color = sf::Color::White;
 
