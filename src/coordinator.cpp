@@ -57,19 +57,26 @@ namespace blast4
         m_aliens.setup(m_context);
 
         m_game.ammo = m_settings.starting_ammo;
+
+        for (int i = 0; i < m_settings.starting_alien_count; ++i)
+        {
+            m_aliens.placeRandom(m_context);
+        }
     }
 
     void Coordinator::loop()
     {
         sf::Clock frameClock;
 
-        while (m_window.isOpen())
+        while (m_window.isOpen() && !m_game.is_game_over)
         {
             m_context.frame_time_sec = frameClock.restart().asSeconds();
             handleEvents();
             update();
             draw();
         }
+
+        std::cout << "Final Score: " << m_game.score << std::endl;
     }
 
     void Coordinator::handleEvents()

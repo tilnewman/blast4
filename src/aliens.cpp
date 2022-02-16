@@ -142,23 +142,6 @@ namespace blast4
         m_texture1.loadFromFile("media/image/alien-ship-1.png");
         m_texture2.loadFromFile("media/image/alien-ship-2.png");
         m_texture3.loadFromFile("media/image/alien-ship-3.png");
-
-        // TODO remove after testing
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
     }
 
     void Aliens::update(Context & context)

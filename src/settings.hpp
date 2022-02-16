@@ -34,6 +34,7 @@ namespace blast4
 
         int starting_ammo = 10;
         int score_for_killing_alien = 1;
+        int starting_alien_count = 5;
     };
 
 } // namespace blast4
