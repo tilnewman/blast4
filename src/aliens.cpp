@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "aliens.hpp"
 
 #include "board.hpp"
@@ -35,8 +37,6 @@ namespace blast4
     void Aliens::update(Context & context)
     {
         const float moveAmount{ context.frame_time_sec * context.settings.ship_speed };
-
-        const sf::Vector2f starshipPosition = util::center(context.starship.globalBounds());
 
         for (Alien & alien : m_aliens)
         {

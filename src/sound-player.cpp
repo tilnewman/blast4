@@ -124,7 +124,7 @@ namespace util
         loadFiles();
     }
 
-    bool SoundPlayer::load(const std::initializer_list<std::string> NAMES)
+    bool SoundPlayer::load(const std::initializer_list<std::string> NAMES) //-V801
     {
         bool success{ true };
 
@@ -250,7 +250,7 @@ namespace util
     bool SoundPlayer::loadFile(
         const std::filesystem::directory_entry & ENTRY, const std::string & NAME_MUST_MATCH)
     {
-        const std::string filename = ENTRY.path().filename().string();
+        const std::string filename = ENTRY.path().filename().string(); //-V807
 
         const bool filenameStartsWith = (filename.find(NAME_MUST_MATCH, 0) == 0);
 

@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "board.hpp"
 
 #include "aliens.hpp"
@@ -265,7 +267,7 @@ namespace blast4
 
         for (std::size_t i = 0; i < m_horizLanes.size(); ++i)
         {
-            if (m_horizLanes.at(i).contains(position))
+            if (m_horizLanes[i].contains(position))
             {
                 indexes.x = i;
                 break;
@@ -274,7 +276,7 @@ namespace blast4
 
         for (std::size_t i = 0; i < m_vertLanes.size(); ++i)
         {
-            if (m_vertLanes.at(i).contains(position))
+            if (m_vertLanes[i].contains(position))
             {
                 indexes.y = i;
                 break;
@@ -292,7 +294,7 @@ namespace blast4
         {
             if (indexToAvoid != i)
             {
-                laneLines.push_back(m_horizLaneLines.at(i));
+                laneLines.push_back(m_horizLaneLines[i]);
             }
         }
 
@@ -306,7 +308,7 @@ namespace blast4
         {
             if (indexToAvoid != i)
             {
-                laneLines.push_back(m_vertLaneLines.at(i));
+                laneLines.push_back(m_vertLaneLines[i]);
             }
         }
 
