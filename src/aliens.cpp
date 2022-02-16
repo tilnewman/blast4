@@ -95,6 +95,13 @@ namespace blast4
                 }
             }
         }
+
+        m_aliens.erase(
+            std::remove_if(
+                std::begin(m_aliens),
+                std::end(m_aliens),
+                [](const Alien & alien) { return !alien.is_alive; }),
+            std::end(m_aliens));
     }
 
     void Aliens::draw(Context & context) const
@@ -140,6 +147,21 @@ namespace blast4
         {
             if (alien.sprite.getGlobalBounds().intersects(rect))
             {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool Aliens::handleBulletCollisionIf(Context & context, const sf::FloatRect& bulletRect)
+    {
+        for (Alien & alien : m_aliens)
+        {
+            if (alien.sprite.getGlobalBounds().intersects(bulletRect))
+            {
+                context.audio.play("bullet-hits-alien");
+                alien.is_alive = false;
                 return true;
             }
         }

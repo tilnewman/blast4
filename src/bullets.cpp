@@ -1,5 +1,6 @@
 #include "bullets.hpp"
 
+#include "aliens.hpp"
 #include "board.hpp"
 #include "check-macros.hpp"
 #include "settings.hpp"
@@ -22,23 +23,30 @@ namespace blast4
     {
         for (Bullet & bullet : m_bullets)
         {
-            bullet.shape.move(bullet.velocity * context.frame_time_sec);
-        }
-
-        for (Bullet & bullet : m_bullets)
-        {
             if (!bullet.is_alive)
             {
                 continue;
             }
 
-            if (context.board.isCollisionWithBoardEdge(bullet.shape.getGlobalBounds()))
+            bullet.shape.move(bullet.velocity * context.frame_time_sec);
+
+            const sf::FloatRect bounds = bullet.shape.getGlobalBounds();
+
+            if (context.board.isCollisionWithBoardEdge(bounds))
             {
                 context.audio.play("bullet-hits-wall");
                 bullet.is_alive = false;
+                continue;
+            }
+
+            if (context.aliens.handleBulletCollisionIf(context, bounds))
+            {
+                bullet.is_alive = false;
+                continue;
             }
         }
 
+        // handle bullets colliding with other bullets
         for (std::size_t outer = 0; outer < m_bullets.size(); ++outer)
         {
             Bullet & bulletOuter = m_bullets.at(outer);

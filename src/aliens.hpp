@@ -31,6 +31,7 @@ namespace blast4
         void draw(Context & context) const;
         void placeRandom(Context & context);
         bool isCollision(const sf::FloatRect & rect) const;
+        bool handleBulletCollisionIf(Context & context, const sf::FloatRect & bulletRect);
 
       private:
         sf::Texture m_texture1;
@@ -38,7 +39,6 @@ namespace blast4
         sf::Texture m_texture3;
 
         std::vector<Alien> m_aliens;
-        Alien m_deadAlien;
     };
 
 } // namespace blast4
