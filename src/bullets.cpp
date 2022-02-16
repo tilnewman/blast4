@@ -5,6 +5,7 @@
 #include "aliens.hpp"
 #include "board.hpp"
 #include "check-macros.hpp"
+#include "game.hpp"
 #include "settings.hpp"
 #include "sound-player.hpp"
 #include "starship.hpp"
@@ -48,6 +49,7 @@ namespace blast4
             {
                 context.audio.play("bullet-hits-alien");
                 bullet.is_alive = false;
+                context.game.score += context.settings.score_for_killing_alien;
                 continue;
             }
         }
@@ -96,10 +98,7 @@ namespace blast4
     }
 
     bool Bullets::create(
-        Context & context,
-        const sf::FloatRect & shooterBounds,
-        const sf::Vector2f & position,
-        const sf::Vector2f & unit_velocity)
+        Context & context, const sf::FloatRect & shipBounds, const sf::Vector2f & unit_velocity)
     {
         Bullet bullet;
 
@@ -117,13 +116,35 @@ namespace blast4
 
         util::setOriginToCenter(bullet.shape);
 
-        // move bullet position far enough away from the starship sprite that fired it
-        // so that it doesn't hit the starship that fired it
-        bullet.shape.setPosition({ position + (unit_velocity * (radius * 1.5f)) });
+        sf::Vector2f startPosition;
+        if (unit_velocity.y < 0.0f)
+        {
+            startPosition =
+                sf::Vector2f{ (shipBounds.left + (shipBounds.width * 0.5f)), shipBounds.top };
+        }
+        else if (unit_velocity.y > 0.0f)
+        {
+            startPosition = sf::Vector2f{ (shipBounds.left + (shipBounds.width * 0.5f)),
+                                          util::bottom(shipBounds) };
+        }
+        else if (unit_velocity.x < 0.0f)
+        {
+            startPosition =
+                sf::Vector2f{ shipBounds.left, (shipBounds.top + (shipBounds.height * 0.5f)) };
+        }
+        else if (unit_velocity.x > 0.0f)
+        {
+            startPosition = sf::Vector2f{ util::right(shipBounds),
+                                          (shipBounds.top + (shipBounds.height * 0.5f)) };
+        }
+
+        // move bullet position far enough away from the ship sprite that fired it
+        // so that it doesn't hit the ship that fired it
+        bullet.shape.setPosition({ startPosition + (unit_velocity * (radius * 1.5f)) });
 
         const sf::FloatRect bulletBounds = bullet.shape.getGlobalBounds();
 
-        if (shooterBounds.intersects(bulletBounds) ||
+        if (shipBounds.intersects(bulletBounds) ||
             context.board.isCollisionWithBlock(bulletBounds) ||
             context.board.isCollisionWithBoardEdge(bulletBounds))
         {

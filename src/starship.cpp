@@ -98,34 +98,21 @@ namespace blast4
         {
             didShoot = true;
             unitVelocity = sf::Vector2f{ 0.0f, -1.0f };
-            startPosition = sf::Vector2f{ (shipRect.left + (shipRect.width * 0.5f)), shipRect.top };
         }
         else if (sf::Keyboard::X == event.key.code)
         {
             didShoot = true;
-
             unitVelocity = sf::Vector2f{ 0.0f, 1.0f };
-
-            startPosition =
-                sf::Vector2f{ (shipRect.left + (shipRect.width * 0.5f)), util::bottom(shipRect) };
         }
         else if (sf::Keyboard::S == event.key.code)
         {
             didShoot = true;
-
             unitVelocity = sf::Vector2f{ -1.0f, 0.0f };
-
-            startPosition =
-                sf::Vector2f{ shipRect.left, (shipRect.top + (shipRect.height * 0.5f)) };
         }
         else if (sf::Keyboard::F == event.key.code)
         {
             didShoot = true;
-
             unitVelocity = sf::Vector2f{ 1.0f, 0.0f };
-
-            startPosition =
-                sf::Vector2f{ util::right(shipRect), (shipRect.top + (shipRect.height * 0.5f)) };
         }
 
         if (didShoot)
@@ -136,7 +123,7 @@ namespace blast4
                 return;
             }
 
-            if (context.bullets.create(context, shipRect, startPosition, unitVelocity))
+            if (context.bullets.create(context, shipRect, unitVelocity))
             {
                 context.audio.play("player-shoot");
                 --context.game.ammo;

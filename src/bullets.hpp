@@ -31,7 +31,6 @@ namespace blast4
         bool create(
             Context & context,
             const sf::FloatRect & shooterBounds,
-            const sf::Vector2f & position,
             const sf::Vector2f & unit_velocity);
 
       private:

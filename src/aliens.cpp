@@ -76,6 +76,53 @@ namespace blast4
         }
     }
 
+    bool Alien::shoot(Context & context)
+    {
+        if (time_until_shoot_sec > 0.0f)
+        {
+            time_until_shoot_sec -= context.frame_time_sec;
+            return false;
+        }
+        else
+        {
+            time_until_shoot_sec = context.random.fromTo(
+                context.settings.alien_shoot_delay_min_sec,
+                context.settings.alien_shoot_delay_max_sec);
+
+            const sf::FloatRect alienBoounds = sprite.getGlobalBounds();
+            const sf::Vector2f alienPosition = util::center(alienBoounds);
+            const sf::Vector2f playerPosition = util::center(context.starship.globalBounds());
+            const sf::Vector2f positionDiff = (playerPosition - alienPosition);
+
+            sf::Vector2f unitVelocity{ 0.0f, 0.0f };
+            if (std::abs(positionDiff.x) > std::abs(positionDiff.y))
+            {
+                if (positionDiff.x < 0.0f)
+                {
+                    unitVelocity.x = -1.0f;
+                }
+                else
+                {
+                    unitVelocity.x = 1.0f;
+                }
+            }
+            else
+            {
+                if (positionDiff.y < 0.0f)
+                {
+                    unitVelocity.y = -1.0f;
+                }
+                else
+                {
+                    unitVelocity.y = 1.0f;
+                }
+            }
+
+            context.bullets.create(context, alienBoounds, unitVelocity);
+            return true;
+        }
+    }
+
     Aliens::Aliens()
         : m_texture1()
         , m_texture2()
@@ -103,6 +150,8 @@ namespace blast4
             {
                 continue;
             }
+
+            alien.shoot(context);
 
             if (alien.move(moveAmount))
             {
@@ -139,6 +188,9 @@ namespace blast4
     {
         Alien alien;
         alien.is_alive = true;
+
+        alien.time_until_shoot_sec = context.random.fromTo(
+            context.settings.alien_shoot_delay_min_sec, context.settings.alien_shoot_delay_max_sec);
 
         // clang-format off
         switch (context.random.fromTo(1, 3))

@@ -20,6 +20,7 @@ namespace blast4
         sf::Sprite sprite;
 
         bool move(const float amount);
+        bool shoot(Context & context);
         void pickNewMoveToTarget(Context & context);
     };
 
