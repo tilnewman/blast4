@@ -44,6 +44,7 @@ namespace blast4
         m_window.create(sf::VideoMode::getDesktopMode(), "Blast4", sf::Style::Fullscreen);
         M_CHECK(m_window.isOpen(), "Error:  Failed to open graphics window!");
 
+        // m_window.setFramerateLimit(60);
         m_window.setKeyRepeatEnabled(false);
         m_window.setMouseCursorVisible(false);
 

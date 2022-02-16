@@ -1,8 +1,10 @@
 #include "board.hpp"
 
+#include "aliens.hpp"
+#include "check-macros.hpp"
 #include "random.hpp"
 #include "settings.hpp"
-#include "util.hpp"
+#include "starship.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -226,28 +228,89 @@ namespace blast4
         return { 0.0f, 0.0f, 0.0f, 0.0f };
     }
 
-    const sf::Vector2f Board::randomPosition(const Context & context) const
+    const sf::Vector2f Board::randomFreePosition(const Context & context) const
     {
-        sf::Vector2f position;
+        std::vector<sf::Vector2f> positions;
 
-        if (context.random.boolean())
+        for (const float vertLane : m_vertLaneLines)
         {
-            position.x = context.random.from(m_horizLaneLines);
+            for (const float horizLane : m_horizLaneLines)
+            {
+                const sf::Vector2f position{ horizLane, vertLane };
+                const sf::FloatRect rect{ position - (shipSize() * 0.5f), shipSize() };
 
-            position.y = context.random.fromTo(
-                (m_boardRect.top + m_shipLength), (util::bottom(m_boardRect) - m_shipLength));
+                if (context.aliens.isCollision(rect))
+                {
+                    continue;
+                }
+
+                if (context.starship.intersects(rect))
+                {
+                    continue;
+                }
+
+                positions.push_back(position);
+            }
         }
-        else
+
+        M_CHECK(!positions.empty(), "Error:  No free places to spawn on the board!");
+
+        return context.random.from(positions);
+    }
+
+    const sf::Vector2s Board::laneIndexes(const sf::Vector2f & position) const
+    {
+        sf::Vector2s indexes{ std::numeric_limits<std::size_t>::max(),
+                              std::numeric_limits<std::size_t>::max() };
+
+        for (std::size_t i = 0; i < m_horizLanes.size(); ++i)
         {
-            position.y = context.random.from(m_vertLaneLines);
-
-            position.x = context.random.fromTo(
-                (m_boardRect.left + m_shipLength), (util::right(m_boardRect) - m_shipLength));
+            if (m_horizLanes.at(i).contains(position))
+            {
+                indexes.x = i;
+                break;
+            }
         }
 
-        // TODO check if collides with player or other aliens
+        for (std::size_t i = 0; i < m_vertLanes.size(); ++i)
+        {
+            if (m_vertLanes.at(i).contains(position))
+            {
+                indexes.y = i;
+                break;
+            }
+        }
 
-        return position;
+        return indexes;
+    }
+
+    const std::vector<float>
+        Board::findLaneLinesOtherThanHoriz(const std::size_t indexToAvoid) const
+    {
+        std::vector<float> laneLines;
+        for (std::size_t i = 0; i < m_horizLaneLines.size(); ++i)
+        {
+            if (indexToAvoid != i)
+            {
+                laneLines.push_back(m_horizLaneLines.at(i));
+            }
+        }
+
+        return laneLines;
+    }
+
+    const std::vector<float> Board::findLaneLinesOtherThanVert(const std::size_t indexToAvoid) const
+    {
+        std::vector<float> laneLines;
+        for (std::size_t i = 0; i < m_vertLaneLines.size(); ++i)
+        {
+            if (indexToAvoid != i)
+            {
+                laneLines.push_back(m_vertLaneLines.at(i));
+            }
+        }
+
+        return laneLines;
     }
 
 } // namespace blast4

@@ -13,9 +13,11 @@ namespace blast4
 
     struct Alien
     {
+        bool is_alive = false;
+        float move_remaining = 0.0f;
+        sf::Vector2f unit_velocity;
         sf::Sprite sprite;
         sf::Clock shoot_clock;
-        bool is_alive = false;
     };
 
     class Aliens
@@ -28,6 +30,7 @@ namespace blast4
         void update(Context & context);
         void draw(Context & context) const;
         void placeRandom(Context & context);
+        bool isCollision(const sf::FloatRect & rect) const;
 
       private:
         sf::Texture m_texture1;
@@ -35,6 +38,7 @@ namespace blast4
         sf::Texture m_texture3;
 
         std::vector<Alien> m_aliens;
+        Alien m_deadAlien;
     };
 
 } // namespace blast4

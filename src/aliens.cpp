@@ -45,39 +45,53 @@ namespace blast4
                 continue;
             }
 
-            const sf::Vector2f alienPosition = util::center(alien.sprite);
+            if (alien.move_remaining > 0.0f)
+            {
+                alien.sprite.move(alien.unit_velocity * moveAmount);
+                alien.move_remaining -= moveAmount;
+            }
+            else
+            {
+                const sf::Vector2f alienPosition = util::center(alien.sprite);
+                const sf::Vector2s laneIndexes = context.board.laneIndexes(alienPosition);
 
-            if (starshipPosition.x < alienPosition.x)
-            {
-                alien.sprite.move(-moveAmount, 0.0f);
-                if (context.board.isCollision(alien.sprite.getGlobalBounds()))
+                if (context.random.boolean())
                 {
-                    alien.sprite.move(moveAmount, 0.0f);
-                }
-            }
-            else if (starshipPosition.x > alienPosition.x)
-            {
-                alien.sprite.move(moveAmount, 0.0f);
-                if (context.board.isCollision(alien.sprite.getGlobalBounds()))
-                {
-                    alien.sprite.move(-moveAmount, 0.0f);
-                }
-            }
+                    const std::vector<float> laneLinesHoriz =
+                        context.board.findLaneLinesOtherThanHoriz(laneIndexes.x);
 
-            if (starshipPosition.y < alienPosition.y)
-            {
-                alien.sprite.move(0.0f, -moveAmount);
-                if (context.board.isCollision(alien.sprite.getGlobalBounds()))
-                {
-                    alien.sprite.move(0.0f, moveAmount);
+                    const float laneLineHoriz = context.random.from(laneLinesHoriz);
+
+                    alien.move_remaining = std::abs(alienPosition.x - laneLineHoriz);
+
+                    alien.unit_velocity.y = 0.0f;
+                    if (laneLineHoriz < alienPosition.x)
+                    {
+                        alien.unit_velocity.x = -1.0f;
+                    }
+                    else
+                    {
+                        alien.unit_velocity.x = 1.0f;
+                    }
                 }
-            }
-            else if (starshipPosition.y > alienPosition.y)
-            {
-                alien.sprite.move(0.0f, moveAmount);
-                if (context.board.isCollision(alien.sprite.getGlobalBounds()))
+                else
                 {
-                    alien.sprite.move(0.0f, -moveAmount);
+                    const std::vector<float> laneLinesVert =
+                        context.board.findLaneLinesOtherThanVert(laneIndexes.y);
+
+                    const float laneLineVert = context.random.from(laneLinesVert);
+
+                    alien.move_remaining = std::abs(alienPosition.y - laneLineVert);
+
+                    alien.unit_velocity.x = 0.0f;
+                    if (laneLineVert < alienPosition.y)
+                    {
+                        alien.unit_velocity.y = -1.0f;
+                    }
+                    else
+                    {
+                        alien.unit_velocity.y = 1.0f;
+                    }
                 }
             }
         }
@@ -104,10 +118,10 @@ namespace blast4
         // clang-format off
         switch (context.random.fromTo(1, 3))
         {
-            case 1:  { alien.sprite.setTexture(m_texture1); }
-            case 2:  { alien.sprite.setTexture(m_texture2); }
+            case 1:  { alien.sprite.setTexture(m_texture1); break; }
+            case 2:  { alien.sprite.setTexture(m_texture2); break; }
             case 3:
-            default: { alien.sprite.setTexture(m_texture3); }
+            default: { alien.sprite.setTexture(m_texture3); break; }
         };
         //clang-format on
 
@@ -115,10 +129,22 @@ namespace blast4
         util::fit(alien.sprite, (context.board.shipSize() * 0.9f));
         util::setOriginToCenter(alien.sprite);
         
-        alien.sprite.setPosition(context.board.randomPosition(context));
+        alien.sprite.setPosition(context.board.randomFreePosition(context));
 
         m_aliens.push_back(alien);
     }
 
+    bool Aliens::isCollision(const sf::FloatRect & rect) const
+    {
+        for (const Alien & alien : m_aliens)
+        {
+            if (alien.sprite.getGlobalBounds().intersects(rect))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 } // namespace blast4
