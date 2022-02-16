@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "starship.hpp"
 
+#include "ammo.hpp"
 #include "board.hpp"
 #include "bullets.hpp"
 #include "check-macros.hpp"
@@ -76,6 +77,13 @@ namespace blast4
             {
                 m_sprite.move(moveAmount, 0.0f);
             }
+        }
+
+        if (context.ammo.handleCollisionIf(context, m_sprite.getGlobalBounds()))
+        {
+            context.audio.play("pickup");
+            context.game.ammo += context.settings.starting_ammo;
+            context.ammo.placeRandom(context);
         }
     }
 

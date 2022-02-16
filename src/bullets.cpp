@@ -38,6 +38,12 @@ namespace blast4
 
             const sf::FloatRect bounds = bullet.shape.getGlobalBounds();
 
+            if (context.starship.intersects(bounds))
+            {
+                context.game.is_game_over = true;
+                return;
+            }
+
             if (context.board.isCollisionWithBoardEdge(bounds))
             {
                 context.audio.play("bullet-hits-wall");
@@ -54,6 +60,8 @@ namespace blast4
                 {
                     context.game.score += context.settings.score_for_killing_alien;
                 }
+
+                context.aliens.placeRandom(context);
 
                 continue;
             }

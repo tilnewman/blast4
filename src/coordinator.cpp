@@ -18,6 +18,7 @@ namespace blast4
         , m_starship()
         , m_bullets()
         , m_aliens()
+        , m_ammo()
         , m_audio(m_random)
         , m_context(
               m_random,
@@ -29,6 +30,7 @@ namespace blast4
               m_starship,
               m_bullets,
               m_aliens,
+              m_ammo,
               m_audio)
     {}
 
@@ -55,6 +57,7 @@ namespace blast4
         m_starship.setup(m_context);
         m_bullets.setup(m_context);
         m_aliens.setup(m_context);
+        m_ammo.setup(m_context);
 
         m_game.ammo = m_settings.starting_ammo;
     }
@@ -63,13 +66,15 @@ namespace blast4
     {
         sf::Clock frameClock;
 
-        while (m_window.isOpen())
+        while (m_window.isOpen() && !m_game.is_game_over)
         {
             m_context.frame_time_sec = frameClock.restart().asSeconds();
             handleEvents();
             update();
             draw();
         }
+
+        std::cout << "Final Score: " << m_game.score << std::endl;
     }
 
     void Coordinator::handleEvents()
@@ -117,6 +122,7 @@ namespace blast4
 
         m_board.draw(m_context);
         m_panel.draw(m_context);
+        m_ammo.draw(m_context);
         m_aliens.draw(m_context);
         m_starship.draw(m_context);
         m_bullets.draw(m_context);

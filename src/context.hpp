@@ -16,7 +16,7 @@ namespace util
 
 namespace blast4
 {
-
+    class Ammo;
     class Board;
     class Aliens;
     class Bullets;
@@ -38,6 +38,7 @@ namespace blast4
             Starship & sta,
             Bullets & bul,
             Aliens & ali,
+            Ammo & amm,
             util::SoundPlayer & sou)
             : random(ran)
             , window(win)
@@ -48,6 +49,7 @@ namespace blast4
             , starship(sta)
             , bullets(bul)
             , aliens(ali)
+            , ammo(amm)
             , audio(sou)
             , frame_time_sec(0.0f)
         {}
@@ -61,6 +63,7 @@ namespace blast4
         Starship & starship;
         Bullets & bullets;
         Aliens & aliens;
+        Ammo & ammo;
         util::SoundPlayer & audio;
 
         float frame_time_sec;
