@@ -148,7 +148,6 @@ namespace blast4
             context.board.isCollisionWithBlock(bulletBounds) ||
             context.board.isCollisionWithBoardEdge(bulletBounds))
         {
-            context.audio.play("bullet-hits-block");
             return false;
         }
         else

@@ -128,6 +128,10 @@ namespace blast4
                 context.audio.play("player-shoot");
                 --context.game.ammo;
             }
+            else
+            {
+                context.audio.play("bullet-hits-block");
+            }
         }
     }
 
