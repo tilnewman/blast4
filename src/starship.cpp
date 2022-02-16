@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "starship.hpp"
 
+#include "aliens.hpp"
 #include "ammo.hpp"
 #include "board.hpp"
 #include "bullets.hpp"
@@ -84,6 +85,12 @@ namespace blast4
             context.audio.play("pickup");
             context.game.ammo += context.settings.starting_ammo;
             context.ammo.placeRandom(context);
+        }
+
+        if (context.aliens.isCollision(m_sprite.getGlobalBounds()))
+        {
+            context.audio.play("bullet-hits-player");
+            context.game.is_game_over = true;
         }
     }
 
