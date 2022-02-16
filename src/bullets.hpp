@@ -17,6 +17,7 @@ namespace blast4
         bool is_alive = false;
         sf::Vector2f velocity;
         sf::CircleShape shape;
+        bool is_from_player = false;
     };
 
     class Bullets
@@ -30,6 +31,7 @@ namespace blast4
 
         bool create(
             Context & context,
+            const bool isFromPlayer,
             const sf::FloatRect & shooterBounds,
             const sf::Vector2f & unit_velocity);
 

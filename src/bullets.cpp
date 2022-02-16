@@ -49,7 +49,12 @@ namespace blast4
             {
                 context.audio.play("bullet-hits-alien");
                 bullet.is_alive = false;
-                context.game.score += context.settings.score_for_killing_alien;
+
+                if (bullet.is_from_player)
+                {
+                    context.game.score += context.settings.score_for_killing_alien;
+                }
+
                 continue;
             }
         }
@@ -98,11 +103,15 @@ namespace blast4
     }
 
     bool Bullets::create(
-        Context & context, const sf::FloatRect & shipBounds, const sf::Vector2f & unit_velocity)
+        Context & context,
+        const bool isFromPlayer,
+        const sf::FloatRect & shipBounds,
+        const sf::Vector2f & unit_velocity)
     {
         Bullet bullet;
 
         bullet.is_alive = true;
+        bullet.is_from_player = isFromPlayer;
         bullet.velocity = (unit_velocity * context.settings.bullet_speed);
         bullet.shape.setFillColor(context.settings.bullet_color);
         bullet.shape.setOutlineColor(context.settings.bullet_color);

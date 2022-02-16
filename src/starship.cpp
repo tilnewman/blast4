@@ -123,7 +123,7 @@ namespace blast4
                 return;
             }
 
-            if (context.bullets.create(context, shipRect, unitVelocity))
+            if (context.bullets.create(context, true, shipRect, unitVelocity))
             {
                 context.audio.play("player-shoot");
                 --context.game.ammo;

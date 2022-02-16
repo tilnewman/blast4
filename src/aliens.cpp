@@ -118,7 +118,7 @@ namespace blast4
                 }
             }
 
-            if (context.bullets.create(context, alienBoounds, unitVelocity))
+            if (context.bullets.create(context, false, alienBoounds, unitVelocity))
             {
                 context.audio.play("alien-shoot");
                 return true;
@@ -144,6 +144,16 @@ namespace blast4
         m_texture3.loadFromFile("media/image/alien-ship-3.png");
 
         // TODO remove after testing
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
+        placeRandom(context);
         placeRandom(context);
         placeRandom(context);
         placeRandom(context);
