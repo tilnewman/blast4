@@ -13,9 +13,11 @@ namespace blast4
 
     struct Alien
     {
+        bool is_alive = false;
+        float move_remaining = 0.0f;
+        sf::Vector2f unit_velocity;
         sf::Sprite sprite;
         sf::Clock shoot_clock;
-        bool is_alive = false;
     };
 
     class Aliens

@@ -5,7 +5,6 @@
 #include "random.hpp"
 #include "settings.hpp"
 #include "starship.hpp"
-#include "util.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -257,6 +256,61 @@ namespace blast4
         M_CHECK(!positions.empty(), "Error:  No free places to spawn on the board!");
 
         return context.random.from(positions);
+    }
+
+    const sf::Vector2s Board::laneIndexes(const sf::Vector2f & position) const
+    {
+        sf::Vector2s indexes{ std::numeric_limits<std::size_t>::max(),
+                              std::numeric_limits<std::size_t>::max() };
+
+        for (std::size_t i = 0; i < m_horizLanes.size(); ++i)
+        {
+            if (m_horizLanes.at(i).contains(position))
+            {
+                indexes.x = i;
+                break;
+            }
+        }
+
+        for (std::size_t i = 0; i < m_vertLanes.size(); ++i)
+        {
+            if (m_vertLanes.at(i).contains(position))
+            {
+                indexes.y = i;
+                break;
+            }
+        }
+
+        return indexes;
+    }
+
+    const std::vector<float>
+        Board::findLaneLinesOtherThanHoriz(const std::size_t indexToAvoid) const
+    {
+        std::vector<float> laneLines;
+        for (std::size_t i = 0; i < m_horizLaneLines.size(); ++i)
+        {
+            if (indexToAvoid != i)
+            {
+                laneLines.push_back(m_horizLaneLines.at(i));
+            }
+        }
+
+        return laneLines;
+    }
+
+    const std::vector<float> Board::findLaneLinesOtherThanVert(const std::size_t indexToAvoid) const
+    {
+        std::vector<float> laneLines;
+        for (std::size_t i = 0; i < m_vertLaneLines.size(); ++i)
+        {
+            if (indexToAvoid != i)
+            {
+                laneLines.push_back(m_vertLaneLines.at(i));
+            }
+        }
+
+        return laneLines;
     }
 
 } // namespace blast4

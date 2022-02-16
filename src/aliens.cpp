@@ -30,14 +30,6 @@ namespace blast4
 
         // TODO remove after testing
         placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
-        placeRandom(context);
     }
 
     void Aliens::update(Context & context)
@@ -53,39 +45,53 @@ namespace blast4
                 continue;
             }
 
-            const sf::Vector2f alienPosition = util::center(alien.sprite);
+            if (alien.move_remaining > 0.0f)
+            {
+                alien.sprite.move(alien.unit_velocity * moveAmount);
+                alien.move_remaining -= moveAmount;
+            }
+            else
+            {
+                const sf::Vector2f alienPosition = util::center(alien.sprite);
+                const sf::Vector2s laneIndexes = context.board.laneIndexes(alienPosition);
 
-            if (starshipPosition.x < alienPosition.x)
-            {
-                alien.sprite.move(-moveAmount, 0.0f);
-                if (context.board.isCollision(alien.sprite.getGlobalBounds()))
+                if (context.random.boolean())
                 {
-                    alien.sprite.move(moveAmount, 0.0f);
-                }
-            }
-            else if (starshipPosition.x > alienPosition.x)
-            {
-                alien.sprite.move(moveAmount, 0.0f);
-                if (context.board.isCollision(alien.sprite.getGlobalBounds()))
-                {
-                    alien.sprite.move(-moveAmount, 0.0f);
-                }
-            }
+                    const std::vector<float> laneLinesHoriz =
+                        context.board.findLaneLinesOtherThanHoriz(laneIndexes.x);
 
-            if (starshipPosition.y < alienPosition.y)
-            {
-                alien.sprite.move(0.0f, -moveAmount);
-                if (context.board.isCollision(alien.sprite.getGlobalBounds()))
-                {
-                    alien.sprite.move(0.0f, moveAmount);
+                    const float laneLineHoriz = context.random.from(laneLinesHoriz);
+
+                    alien.move_remaining = std::abs(alienPosition.x - laneLineHoriz);
+
+                    alien.unit_velocity.y = 0.0f;
+                    if (laneLineHoriz < alienPosition.x)
+                    {
+                        alien.unit_velocity.x = -1.0f;
+                    }
+                    else
+                    {
+                        alien.unit_velocity.x = 1.0f;
+                    }
                 }
-            }
-            else if (starshipPosition.y > alienPosition.y)
-            {
-                alien.sprite.move(0.0f, moveAmount);
-                if (context.board.isCollision(alien.sprite.getGlobalBounds()))
+                else
                 {
-                    alien.sprite.move(0.0f, -moveAmount);
+                    const std::vector<float> laneLinesVert =
+                        context.board.findLaneLinesOtherThanVert(laneIndexes.y);
+
+                    const float laneLineVert = context.random.from(laneLinesVert);
+
+                    alien.move_remaining = std::abs(alienPosition.y - laneLineVert);
+
+                    alien.unit_velocity.x = 0.0f;
+                    if (laneLineVert < alienPosition.y)
+                    {
+                        alien.unit_velocity.y = -1.0f;
+                    }
+                    else
+                    {
+                        alien.unit_velocity.y = 1.0f;
+                    }
                 }
             }
         }

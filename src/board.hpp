@@ -2,6 +2,7 @@
 #define BLAST4_BOARD_HPP
 
 #include "context.hpp"
+#include "util.hpp"
 
 #include <vector>
 
@@ -54,6 +55,11 @@ namespace blast4
         }
 
         const sf::Vector2f randomFreePosition(const Context & context) const;
+
+        const sf::Vector2s laneIndexes(const sf::Vector2f & position) const;
+
+        const std::vector<float> findLaneLinesOtherThanHoriz(const std::size_t indexToAvoid) const;
+        const std::vector<float> findLaneLinesOtherThanVert(const std::size_t indexToAvoid) const;
 
       private:
         float findLaneLine(const std::vector<float> & lines, const float position) const;
