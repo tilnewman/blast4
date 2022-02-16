@@ -25,12 +25,15 @@ namespace blast4
     {
         for (Bullet & bullet : m_bullets)
         {
+            bullet.shape.move(bullet.velocity * context.frame_time_sec);
+        }
+
+        for (Bullet & bullet : m_bullets)
+        {
             if (!bullet.is_alive)
             {
                 continue;
             }
-
-            bullet.shape.move(bullet.velocity * context.frame_time_sec);
 
             const sf::FloatRect bounds = bullet.shape.getGlobalBounds();
 
@@ -43,6 +46,7 @@ namespace blast4
 
             if (context.aliens.handleBulletCollisionIf(context, bounds))
             {
+                context.audio.play("bullet-hits-alien");
                 bullet.is_alive = false;
                 continue;
             }

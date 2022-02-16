@@ -16,8 +16,11 @@ namespace blast4
         bool is_alive = false;
         float move_remaining = 0.0f;
         sf::Vector2f unit_velocity;
+        float time_until_shoot_sec = 0.0f;
         sf::Sprite sprite;
-        sf::Clock shoot_clock;
+
+        bool move(const float amount);
+        void pickNewMoveToTarget(Context & context);
     };
 
     class Aliens

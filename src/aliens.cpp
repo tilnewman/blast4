@@ -17,6 +17,65 @@
 namespace blast4
 {
 
+    bool Alien::move(const float amount)
+    {
+        if (move_remaining > 0.0f)
+        {
+            sprite.move(unit_velocity * amount);
+            move_remaining -= amount;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void Alien::pickNewMoveToTarget(Context & context)
+    {
+        const sf::Vector2f alienPosition = util::center(sprite);
+        const sf::Vector2s laneIndexes = context.board.laneIndexes(alienPosition);
+
+        if (context.random.boolean())
+        {
+            const std::vector<float> laneLinesHoriz =
+                context.board.findLaneLinesOtherThanHoriz(laneIndexes.x);
+
+            const float laneLineHoriz = context.random.from(laneLinesHoriz);
+
+            move_remaining = std::abs(alienPosition.x - laneLineHoriz);
+
+            unit_velocity.y = 0.0f;
+            if (laneLineHoriz < alienPosition.x)
+            {
+                unit_velocity.x = -1.0f;
+            }
+            else
+            {
+                unit_velocity.x = 1.0f;
+            }
+        }
+        else
+        {
+            const std::vector<float> laneLinesVert =
+                context.board.findLaneLinesOtherThanVert(laneIndexes.y);
+
+            const float laneLineVert = context.random.from(laneLinesVert);
+
+            move_remaining = std::abs(alienPosition.y - laneLineVert);
+
+            unit_velocity.x = 0.0f;
+            if (laneLineVert < alienPosition.y)
+            {
+                unit_velocity.y = -1.0f;
+            }
+            else
+            {
+                unit_velocity.y = 1.0f;
+            }
+        }
+    }
+
     Aliens::Aliens()
         : m_texture1()
         , m_texture2()
@@ -45,54 +104,13 @@ namespace blast4
                 continue;
             }
 
-            if (alien.move_remaining > 0.0f)
+            if (alien.move(moveAmount))
             {
-                alien.sprite.move(alien.unit_velocity * moveAmount);
-                alien.move_remaining -= moveAmount;
+                continue;
             }
             else
             {
-                const sf::Vector2f alienPosition = util::center(alien.sprite);
-                const sf::Vector2s laneIndexes = context.board.laneIndexes(alienPosition);
-
-                if (context.random.boolean())
-                {
-                    const std::vector<float> laneLinesHoriz =
-                        context.board.findLaneLinesOtherThanHoriz(laneIndexes.x);
-
-                    const float laneLineHoriz = context.random.from(laneLinesHoriz);
-
-                    alien.move_remaining = std::abs(alienPosition.x - laneLineHoriz);
-
-                    alien.unit_velocity.y = 0.0f;
-                    if (laneLineHoriz < alienPosition.x)
-                    {
-                        alien.unit_velocity.x = -1.0f;
-                    }
-                    else
-                    {
-                        alien.unit_velocity.x = 1.0f;
-                    }
-                }
-                else
-                {
-                    const std::vector<float> laneLinesVert =
-                        context.board.findLaneLinesOtherThanVert(laneIndexes.y);
-
-                    const float laneLineVert = context.random.from(laneLinesVert);
-
-                    alien.move_remaining = std::abs(alienPosition.y - laneLineVert);
-
-                    alien.unit_velocity.x = 0.0f;
-                    if (laneLineVert < alienPosition.y)
-                    {
-                        alien.unit_velocity.y = -1.0f;
-                    }
-                    else
-                    {
-                        alien.unit_velocity.y = 1.0f;
-                    }
-                }
+                alien.pickNewMoveToTarget(context);
             }
         }
 
@@ -154,13 +172,12 @@ namespace blast4
         return false;
     }
 
-    bool Aliens::handleBulletCollisionIf(Context & context, const sf::FloatRect& bulletRect)
+    bool Aliens::handleBulletCollisionIf(Context &, const sf::FloatRect& bulletRect)
     {
         for (Alien & alien : m_aliens)
         {
             if (alien.sprite.getGlobalBounds().intersects(bulletRect))
             {
-                context.audio.play("bullet-hits-alien");
                 alien.is_alive = false;
                 return true;
             }
