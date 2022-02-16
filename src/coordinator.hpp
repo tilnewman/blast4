@@ -2,6 +2,7 @@
 #define BLAST4_COORDINATOR_HPP
 
 #include "aliens.hpp"
+#include "ammo.hpp"
 #include "board.hpp"
 #include "bullets.hpp"
 #include "context.hpp"
@@ -44,6 +45,7 @@ namespace blast4
         Starship m_starship;
         Bullets m_bullets;
         Aliens m_aliens;
+        Ammo m_ammo;
         util::SoundPlayer m_audio;
 
         Context m_context;

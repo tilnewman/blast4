@@ -17,6 +17,7 @@ namespace blast4
         sf::Color title_color = sf::Color(220, 220, 255);
         sf::Color text_color = sf::Color(100, 100, 200);
         sf::Color alien_color = (block_color + sf::Color(50, 50, 50));
+        sf::Color ammo_color = sf::Color(200, 200, 100);
 
         sf::Vector2i block_count = { 9, 4 };
 
@@ -34,7 +35,8 @@ namespace blast4
 
         int starting_ammo = 10;
         int score_for_killing_alien = 1;
-        int starting_alien_count = 5;
+        int starting_alien_count = 3;
+        int starting_ammo_count = 1;
     };
 
 } // namespace blast4

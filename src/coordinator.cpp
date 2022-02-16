@@ -18,6 +18,7 @@ namespace blast4
         , m_starship()
         , m_bullets()
         , m_aliens()
+        , m_ammo()
         , m_audio(m_random)
         , m_context(
               m_random,
@@ -29,6 +30,7 @@ namespace blast4
               m_starship,
               m_bullets,
               m_aliens,
+              m_ammo,
               m_audio)
     {}
 
@@ -55,13 +57,9 @@ namespace blast4
         m_starship.setup(m_context);
         m_bullets.setup(m_context);
         m_aliens.setup(m_context);
+        m_ammo.setup(m_context);
 
         m_game.ammo = m_settings.starting_ammo;
-
-        for (int i = 0; i < m_settings.starting_alien_count; ++i)
-        {
-            m_aliens.placeRandom(m_context);
-        }
     }
 
     void Coordinator::loop()
@@ -124,6 +122,7 @@ namespace blast4
 
         m_board.draw(m_context);
         m_panel.draw(m_context);
+        m_ammo.draw(m_context);
         m_aliens.draw(m_context);
         m_starship.draw(m_context);
         m_bullets.draw(m_context);

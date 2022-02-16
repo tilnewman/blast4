@@ -142,6 +142,11 @@ namespace blast4
         m_texture1.loadFromFile("media/image/alien-ship-1.png");
         m_texture2.loadFromFile("media/image/alien-ship-2.png");
         m_texture3.loadFromFile("media/image/alien-ship-3.png");
+
+        for (int i = 0; i < context.settings.starting_alien_count; ++i)
+        {
+            placeRandom(context);
+        }
     }
 
     void Aliens::update(Context & context)
@@ -219,6 +224,11 @@ namespace blast4
     {
         for (const Alien & alien : m_aliens)
         {
+            if (!alien.is_alive)
+            {
+                continue;
+            }
+
             if (alien.sprite.getGlobalBounds().intersects(rect))
             {
                 return true;
@@ -232,6 +242,11 @@ namespace blast4
     {
         for (Alien & alien : m_aliens)
         {
+            if (!alien.is_alive)
+            {
+                continue;
+            }
+
             if (alien.sprite.getGlobalBounds().intersects(bulletRect))
             {
                 alien.is_alive = false;
