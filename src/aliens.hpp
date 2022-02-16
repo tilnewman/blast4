@@ -38,7 +38,6 @@ namespace blast4
       private:
         sf::Texture m_texture1;
         sf::Texture m_texture2;
-        sf::Texture m_texture3;
 
         std::vector<Alien> m_aliens;
     };

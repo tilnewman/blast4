@@ -133,7 +133,6 @@ namespace blast4
     Aliens::Aliens()
         : m_texture1()
         , m_texture2()
-        , m_texture3()
         , m_aliens()
     {}
 
@@ -141,7 +140,6 @@ namespace blast4
     {
         m_texture1.loadFromFile("media/image/alien-ship-1.png");
         m_texture2.loadFromFile("media/image/alien-ship-2.png");
-        m_texture3.loadFromFile("media/image/alien-ship-3.png");
 
         for (int i = 0; i < context.settings.starting_alien_count; ++i)
         {
@@ -201,20 +199,19 @@ namespace blast4
         alien.time_until_shoot_sec = context.random.fromTo(
             context.settings.alien_shoot_delay_min_sec, context.settings.alien_shoot_delay_max_sec);
 
-        // clang-format off
-        switch (context.random.fromTo(1, 3))
+        if (context.random.boolean())
         {
-            case 1:  { alien.sprite.setTexture(m_texture1); break; }
-            case 2:  { alien.sprite.setTexture(m_texture2); break; }
-            case 3:
-            default: { alien.sprite.setTexture(m_texture3); break; }
+            alien.sprite.setTexture(m_texture1);
+        }
+        else
+        {
+            alien.sprite.setTexture(m_texture2);
         };
-        //clang-format on
 
         alien.sprite.setColor(context.settings.alien_color);
         util::fit(alien.sprite, (context.board.shipSize() * 0.9f));
         util::setOriginToCenter(alien.sprite);
-        
+
         alien.sprite.setPosition(context.board.randomFreePosition(context));
 
         m_aliens.push_back(alien);
@@ -238,7 +235,7 @@ namespace blast4
         return false;
     }
 
-    bool Aliens::handleBulletCollisionIf(Context &, const sf::FloatRect& bulletRect)
+    bool Aliens::handleBulletCollisionIf(Context &, const sf::FloatRect & bulletRect)
     {
         for (Alien & alien : m_aliens)
         {
