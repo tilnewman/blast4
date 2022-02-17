@@ -209,7 +209,7 @@ namespace blast4
         };
 
         alien.sprite.setColor(context.settings.alien_color);
-        util::fit(alien.sprite, (context.board.shipSize() * 0.9f));
+        util::fit(alien.sprite, (context.board.shipSize() * 1.0f));
         util::setOriginToCenter(alien.sprite);
 
         alien.sprite.setPosition(context.board.randomFreePosition(context));
