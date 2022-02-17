@@ -34,7 +34,8 @@ namespace blast4
         float text_size_ratio = 0.05f;
 
         int starting_ammo = 10;
-        int score_for_killing_alien = 1;
+        int score_for_killing_alien = 10;
+        int score_for_pickup = 1;
         int starting_alien_count = 3;
         int starting_ammo_count = 1;
     };

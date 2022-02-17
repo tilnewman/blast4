@@ -85,6 +85,7 @@ namespace blast4
         {
             context.audio.play("pickup");
             context.game.ammo += context.settings.starting_ammo;
+            context.game.score += context.settings.score_for_pickup;
             context.ammo.placeRandom(context);
         }
 
