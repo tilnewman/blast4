@@ -151,7 +151,7 @@ namespace blast4
         }
 
         m_stateUPtr->OnExit(context);
-        m_stateUPtr.release();
+        m_stateUPtr.reset();
         m_stateUPtr = factory(m_statePending.value());
         m_statePending.reset();
         m_stateUPtr->OnEnter(context);
@@ -167,8 +167,8 @@ namespace blast4
             case State::Play:    { return std::make_unique<PlayState>();  }
             case State::Pause:   { return std::make_unique<PauseState>(); }
             case State::End:     { return std::make_unique<EndState>();   }
-            default:
-            case State::Teardown: { return std::make_unique<TeardownState>(); }
+            case State::Teardown:
+            default:             { return std::make_unique<TeardownState>(); }
         }
         // clang-format on
     }
