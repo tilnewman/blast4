@@ -92,7 +92,7 @@ namespace blast4
         if (context.aliens.isCollision(m_sprite.getGlobalBounds()))
         {
             context.audio.play("bullet-hits-player");
-            context.states.setChangePending(State::Teardown);
+            context.states.setChangePending(State::End);
         }
     }
 

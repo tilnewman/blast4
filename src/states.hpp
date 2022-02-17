@@ -66,6 +66,11 @@ namespace blast4
       public:
         virtual ~StartState() override {}
         State which() const override { return State::Start; }
+        void OnEnter(Context &) override;
+        void update(Context &) override;
+
+      private:
+        float m_timerSec = 0.0f;
     };
 
     class PlayState : public StateBase
@@ -95,6 +100,11 @@ namespace blast4
       public:
         virtual ~EndState() override {}
         State which() const override { return State::End; }
+        void OnEnter(Context &) override;
+        void update(Context &) override;
+
+      private:
+        float m_timerSec = 0.0f;
     };
 
     // do-nothing placeholder state for when the app is exiting

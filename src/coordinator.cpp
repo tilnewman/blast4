@@ -62,7 +62,7 @@ namespace blast4
         m_ammo.setup(m_context);
 
         m_game.ammo = m_settings.starting_ammo;
-        m_states.setChangePending(State::Play);
+        m_states.setChangePending(State::Start);
     }
 
     void Coordinator::loop()

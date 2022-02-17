@@ -63,6 +63,36 @@ namespace blast4
         text.setPosition(util::center(boardRect) - (util::size(text) * 0.5f));
     }
 
+    void StartState::OnEnter(Context & context)
+    {
+        m_timerSec = 5.0f;
+        context.audio.play("game-start");
+    }
+
+    void StartState::update(Context & context)
+    {
+        m_timerSec -= context.frame_time_sec;
+        if (m_timerSec < 0.0f)
+        {
+            context.states.setChangePending(State::Play);
+        }
+    }
+
+    void EndState::OnEnter(Context & context)
+    {
+        m_timerSec = 5.0f;
+        context.audio.play("game-end");
+    }
+
+    void EndState::update(Context & context)
+    {
+        m_timerSec -= context.frame_time_sec;
+        if (m_timerSec < 0.0f)
+        {
+            context.states.setChangePending(State::Teardown);
+        }
+    }
+
     void PlayState::update(Context & context)
     {
         StateBase::update(context);
