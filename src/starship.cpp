@@ -84,7 +84,7 @@ namespace blast4
         if (context.ammo.handleCollisionIf(context, m_sprite.getGlobalBounds()))
         {
             context.audio.play("pickup");
-            context.game.ammo += context.settings.starting_ammo;
+            context.game.ammo += context.settings.ammo_per_pickup;
             context.game.score += context.settings.score_for_pickup;
             context.ammo.placeRandom(context);
         }

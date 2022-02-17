@@ -27,17 +27,20 @@ namespace blast4
         float ship_size_ratio = 0.03f;
         float edge_pad_ratio = 0.05f;
         float border_pad_ratio = 0.01f;
-        float ship_speed = 125.0f;
-        float bullet_speed = 375.0f;
+        float ship_speed = 175.0f;
+        float bullet_speed = 400.0f;
         float bullet_radius_ship_ratio = 0.1f;
         float bullet_shoot_delay_sec = 0.1f;
         float text_size_ratio = 0.05f;
 
-        int starting_ammo = 10;
         int score_for_killing_alien = 10;
         int score_for_pickup = 1;
-        int starting_alien_count = 3;
-        int starting_ammo_count = 1;
+
+        int starting_alien_count = 4;
+        int starting_ammo_pickup_count = 1;
+        int starting_ammo = 10;
+
+        int ammo_per_pickup = 5;
     };
 
 } // namespace blast4

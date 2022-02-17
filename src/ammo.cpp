@@ -26,7 +26,7 @@ namespace blast4
     {
         m_texture.loadFromFile("media/image/ammo.png");
 
-        for (int i = 0; i < context.settings.starting_ammo_count; ++i)
+        for (int i = 0; i < context.settings.starting_ammo_pickup_count; ++i)
         {
             placeRandom(context);
         }

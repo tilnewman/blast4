@@ -41,7 +41,18 @@ namespace blast4
 
             if (context.starship.intersects(bounds))
             {
-                context.states.setChangePending(State::Teardown);
+                context.audio.play("bullet-hits-player");
+
+                if (context.game.ammo <= 0)
+                {
+                    context.states.setChangePending(State::Teardown);
+                }
+                else
+                {
+                    context.game.ammo = context.game.ammo / 2;
+                }
+
+                bullet.is_alive = false;
                 return;
             }
 
