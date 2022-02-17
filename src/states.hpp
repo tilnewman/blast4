@@ -38,7 +38,7 @@ namespace blast4
     {
       public:
         StateBase() {}
-        virtual ~StateBase() {}
+        virtual ~StateBase() override {}
 
         void OnEnter(Context &) override {}
         void OnExit(Context &) override {}
