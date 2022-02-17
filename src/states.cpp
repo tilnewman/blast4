@@ -82,12 +82,13 @@ namespace blast4
         // clang-format off
         switch (state)
         {
-            case State::Setup:      { return std::make_unique<SetupState>(); }
-            case State::StartGame:  { return std::make_unique<StartGameState>(); }
-            case State::Play:       { return std::make_unique<PlayState>(); }
-            case State::EndGame:    { return std::make_unique<EndGameState>(); }
+            case State::Setup:   { return std::make_unique<SetupState>(); }
+            case State::Start:   { return std::make_unique<StartState>(); }
+            case State::Play:    { return std::make_unique<PlayState>();  }
+            case State::Pause:   { return std::make_unique<PauseState>(); }
+            case State::End:     { return std::make_unique<EndState>();   }
             default:
-            case State::Teardown:   { return std::make_unique<TeardownState>(); }
+            case State::Teardown: { return std::make_unique<TeardownState>(); }
         }
         // clang-format on
     }

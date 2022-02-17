@@ -15,9 +15,10 @@ namespace blast4
     enum class State
     {
         Setup,
-        StartGame,
+        Start,
         Play,
-        EndGame,
+        Pause,
+        End,
         Teardown
     };
 
@@ -39,12 +40,6 @@ namespace blast4
         StateBase() {}
         virtual ~StateBase() {}
 
-        // prevent all copy and assignment
-        StateBase(const StateBase &) = delete;
-        StateBase(StateBase &&) = delete;
-        StateBase operator=(const StateBase &) = delete;
-        StateBase operator=(StateBase &&) = delete;
-
         void OnEnter(Context &) override {}
         void OnExit(Context &) override {}
         void update(Context &) override {}
@@ -56,39 +51,46 @@ namespace blast4
     class SetupState : public StateBase
     {
       public:
-        virtual ~SetupState() {}
+        virtual ~SetupState() override {}
         State which() const override { return State::Setup; }
     };
 
-    class StartGameState : public StateBase
+    class StartState : public StateBase
     {
       public:
-        virtual ~StartGameState() {}
-        State which() const override { return State::StartGame; }
+        virtual ~StartState() override {}
+        State which() const override { return State::Start; }
     };
 
     class PlayState : public StateBase
     {
       public:
-        virtual ~PlayState() {}
+        virtual ~PlayState() override {}
         State which() const override { return State::Setup; }
         void draw(Context & context) override;
         void update(Context & context) override;
         void handleEvent(Context & context, const sf::Event & event) override;
     };
 
-    class EndGameState : public StateBase
+    class PauseState : public StateBase
     {
       public:
-        virtual ~EndGameState() {}
-        State which() const override { return State::EndGame; }
+        virtual ~PauseState() override {}
+        State which() const override { return State::Pause; }
+    };
+
+    class EndState : public StateBase
+    {
+      public:
+        virtual ~EndState() override {}
+        State which() const override { return State::End; }
     };
 
     // do-nothing placeholder state for when the app is exiting
     class TeardownState : public StateBase
     {
       public:
-        virtual ~TeardownState() {}
+        virtual ~TeardownState() override {}
         State which() const override { return State::Teardown; }
     };
 
@@ -105,7 +107,7 @@ namespace blast4
         static std::unique_ptr<IState> factory(const State state);
 
       private:
-        // must always contain a valid state
+        // must always point to a valid state
         std::unique_ptr<IState> m_stateUPtr;
 
         std::optional<State> m_statePending;
