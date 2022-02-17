@@ -11,6 +11,7 @@
 #include "settings.hpp"
 #include "sound-player.hpp"
 #include "starship.hpp"
+#include "states.hpp"
 #include "top-panel.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -46,6 +47,7 @@ namespace blast4
         Bullets m_bullets;
         Aliens m_aliens;
         Ammo m_ammo;
+        StateMachine m_states;
         util::SoundPlayer m_audio;
 
         Context m_context;

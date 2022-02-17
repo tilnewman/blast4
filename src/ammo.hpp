@@ -3,6 +3,8 @@
 
 #include "context.hpp"
 
+#include <vector>
+
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 

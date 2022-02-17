@@ -19,6 +19,7 @@ namespace blast4
         , m_bullets()
         , m_aliens()
         , m_ammo()
+        , m_states()
         , m_audio(m_random)
         , m_context(
               m_random,
@@ -31,6 +32,7 @@ namespace blast4
               m_bullets,
               m_aliens,
               m_ammo,
+              m_states,
               m_audio)
     {}
 
@@ -60,15 +62,17 @@ namespace blast4
         m_ammo.setup(m_context);
 
         m_game.ammo = m_settings.starting_ammo;
+        m_states.setChangePending(State::Play);
     }
 
     void Coordinator::loop()
     {
         sf::Clock frameClock;
 
-        while (m_window.isOpen() && !m_game.is_game_over)
+        while (m_window.isOpen() && (m_states.which() != State::Teardown))
         {
             m_context.frame_time_sec = frameClock.restart().asSeconds();
+            m_states.changeIfPending(m_context);
             handleEvents();
             update();
             draw();
@@ -88,45 +92,15 @@ namespace blast4
 
     void Coordinator::handleEvent(const sf::Event & event)
     {
-        if (event.type == sf::Event::Closed)
-        {
-            m_window.close();
-            return;
-        }
-
-        m_starship.handleEvent(m_context, event);
-
-        if (event.type != sf::Event::KeyPressed)
-        {
-            return;
-        }
-
-        if (sf::Keyboard::Escape == event.key.code)
-        {
-            m_window.close();
-            return;
-        }
+        m_states.state().handleEvent(m_context, event);
     }
 
-    void Coordinator::update()
-    {
-        m_starship.update(m_context);
-        m_aliens.update(m_context);
-        m_bullets.update(m_context);
-        m_panel.update(m_context);
-    }
+    void Coordinator::update() { m_states.state().update(m_context); }
 
     void Coordinator::draw()
     {
         m_window.clear(m_context.settings.background_color);
-
-        m_board.draw(m_context);
-        m_panel.draw(m_context);
-        m_ammo.draw(m_context);
-        m_aliens.draw(m_context);
-        m_starship.draw(m_context);
-        m_bullets.draw(m_context);
-
+        m_states.state().draw(m_context);
         m_window.display();
     }
 

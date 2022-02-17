@@ -22,6 +22,7 @@ namespace blast4
     class Bullets;
     class Starship;
     class TopPanel;
+    class StateMachine;
 
     struct Game;
     struct Settings;
@@ -39,6 +40,7 @@ namespace blast4
             Bullets & bul,
             Aliens & ali,
             Ammo & amm,
+            StateMachine & sm,
             util::SoundPlayer & sou)
             : random(ran)
             , window(win)
@@ -50,6 +52,7 @@ namespace blast4
             , bullets(bul)
             , aliens(ali)
             , ammo(amm)
+            , states(sm)
             , audio(sou)
             , frame_time_sec(0.0f)
         {}
@@ -64,6 +67,7 @@ namespace blast4
         Bullets & bullets;
         Aliens & aliens;
         Ammo & ammo;
+        StateMachine & states;
         util::SoundPlayer & audio;
 
         float frame_time_sec;

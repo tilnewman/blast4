@@ -10,6 +10,7 @@
 #include "game.hpp"
 #include "settings.hpp"
 #include "sound-player.hpp"
+#include "states.hpp"
 #include "util.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -90,7 +91,7 @@ namespace blast4
         if (context.aliens.isCollision(m_sprite.getGlobalBounds()))
         {
             context.audio.play("bullet-hits-player");
-            context.game.is_game_over = true;
+            context.states.setChangePending(State::Teardown);
         }
     }
 

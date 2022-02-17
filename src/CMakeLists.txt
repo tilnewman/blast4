@@ -63,7 +63,6 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         -Wno-error
         -Wno-exit-time-destructors
         -Wno-global-constructors
-        -Wno-inconsistent-missing-destructor-override
         -Wno-newline-eof
         -Wno-padded
         -Wno-unused-command-line-argument
