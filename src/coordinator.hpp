@@ -35,6 +35,7 @@ namespace blast4
         void handleEvent(const sf::Event & event);
         void update();
         void draw();
+        void setVideoModeAndOpenWindow();
 
       private:
         util::Random m_random;

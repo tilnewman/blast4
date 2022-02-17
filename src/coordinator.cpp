@@ -47,10 +47,9 @@ namespace blast4
         m_audio.mediaPath("media/sound");
         m_audio.loadAll();
 
-        m_window.create(sf::VideoMode::getDesktopMode(), "Blast4", sf::Style::Fullscreen);
-        M_CHECK(m_window.isOpen(), "Error:  Failed to open graphics window!");
+        setVideoModeAndOpenWindow();
 
-        // m_window.setFramerateLimit(60);
+        m_window.setFramerateLimit(60);
         m_window.setKeyRepeatEnabled(false);
         m_window.setMouseCursorVisible(false);
 
@@ -102,6 +101,33 @@ namespace blast4
         m_window.clear(m_context.settings.background_color);
         m_states.state().draw(m_context);
         m_window.display();
+    }
+
+    void Coordinator::setVideoModeAndOpenWindow()
+    {
+        const sf::VideoMode desktopMode{ sf::VideoMode::getDesktopMode() };
+        const sf::VideoMode targetMode{ 1920, 1200, sf::VideoMode::getDesktopMode().bitsPerPixel };
+        m_window.create(util::findVideoModeClosestTo(targetMode), "Blast4", sf::Style::Fullscreen);
+
+        sf::VideoMode finalMode{ m_window.getSize().x,
+                                 m_window.getSize().y,
+                                 m_window.getSettings().depthBits };
+
+        // sometimes 32bpp gets reported as 0bpp...don't know why
+        if (0 == finalMode.bitsPerPixel)
+        {
+            finalMode.bitsPerPixel = desktopMode.bitsPerPixel;
+        }
+
+        if (m_window.isOpen())
+        {
+            std::cout << "Desktop resolution is " << desktopMode << ".  The game will run in "
+                      << finalMode << std::endl;
+        }
+        else
+        {
+            std::cout << "Error:  Failed to open graphics window!" << std::endl;
+        }
     }
 
 } // namespace blast4

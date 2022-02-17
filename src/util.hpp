@@ -1382,6 +1382,41 @@ namespace util
 
         return ss.str();
     }
+
+    inline const sf::VideoMode findVideoModeClosestTo(const sf::VideoMode & targetMode)
+    {
+        std::vector<sf::VideoMode> videoModes = sf::VideoMode::getFullscreenModes();
+
+        videoModes.erase(
+            std::remove_if(
+                std::begin(videoModes),
+                std::end(videoModes),
+                [&](const auto & vm) { return (vm.bitsPerPixel != targetMode.bitsPerPixel); }),
+            std::end(videoModes));
+
+        if (videoModes.empty())
+        {
+            return sf::VideoMode::getDesktopMode();
+        }
+
+        std::sort(
+            std::begin(videoModes),
+            std::end(videoModes),
+            [&](const sf::VideoMode A, const sf::VideoMode B) {
+                const unsigned int diffA{ (
+                    util::abs(A.width - targetMode.width) +
+                    util::abs(A.height - targetMode.height)) };
+
+                const unsigned int diffB{ (
+                    util::abs(B.width - targetMode.width) +
+                    util::abs(B.height - targetMode.height)) };
+
+                return (diffA < diffB);
+            });
+
+        return *videoModes.begin();
+    }
+
 } // namespace util
 
 #endif // SNAKE_UTIL_HPP_INCLUDED
