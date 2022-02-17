@@ -45,7 +45,7 @@ namespace blast4
 
                 if (context.game.ammo <= 0)
                 {
-                    context.states.setChangePending(State::Teardown);
+                    context.states.setChangePending(State::End);
                 }
                 else
                 {
