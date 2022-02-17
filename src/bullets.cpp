@@ -9,6 +9,7 @@
 #include "settings.hpp"
 #include "sound-player.hpp"
 #include "starship.hpp"
+#include "states.hpp"
 #include "util.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -40,7 +41,7 @@ namespace blast4
 
             if (context.starship.intersects(bounds))
             {
-                context.game.is_game_over = true;
+                context.states.setChangePending(State::Teardown);
                 return;
             }
 

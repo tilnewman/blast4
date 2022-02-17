@@ -24,6 +24,9 @@ namespace blast4
         void update(Context & context);
         void draw(Context & context) const;
 
+        const sf::Font & titleFont() const { return m_titleFont; }
+        const sf::Font & generalFont() const { return m_generalFont; }
+
       private:
         sf::Vector2f m_windowSize;
         sf::FloatRect m_boardRect;

@@ -19,7 +19,9 @@
 namespace blast4
 {
 
-    void PlayState::draw(Context & context)
+    void StateBase::update(Context & context) { context.panel.update(context); }
+
+    void StateBase::draw(Context & context)
     {
         context.board.draw(context);
         context.panel.draw(context);
@@ -29,34 +31,82 @@ namespace blast4
         context.bullets.draw(context);
     }
 
-    void PlayState::update(Context & context)
-    {
-        context.starship.update(context);
-        context.aliens.update(context);
-        context.bullets.update(context);
-        context.panel.update(context);
-    }
-
-    void PlayState::handleEvent(Context & context, const sf::Event & event)
+    void StateBase::handleCloseEvents(Context & context, const sf::Event & event)
     {
         if (event.type == sf::Event::Closed)
         {
             context.window.close();
-            return;
+        }
+        else if (event.type == sf::Event::KeyPressed)
+        {
+            if (sf::Keyboard::Escape == event.key.code)
+            {
+                context.window.close();
+            }
+        }
+    }
+
+    void
+        StateBase::setupTextMessage(Context & context, const std::string & message, sf::Text & text)
+    {
+        text.setFont(context.panel.titleFont());
+        text.setFillColor(context.settings.title_color);
+        text.setCharacterSize(200);
+        text.setString(message);
+        util::setOriginToPosition(text);
+
+        const sf::FloatRect boardRect = context.board.rect();
+        const float height{ boardRect.height * 0.2f };
+        const sf::FloatRect fitRect{ 0.0f, 0.0f, boardRect.width, height };
+        util::fit(text, fitRect);
+
+        text.setPosition(util::center(boardRect) - (util::size(text) * 0.5f));
+    }
+
+    void PlayState::update(Context & context)
+    {
+        StateBase::update(context);
+        context.starship.update(context);
+        context.aliens.update(context);
+        context.bullets.update(context);
+    }
+
+    void PlayState::handleEvent(Context & context, const sf::Event & event)
+    {
+        StateBase::handleCloseEvents(context, event);
+
+        if (event.type == sf::Event::KeyPressed)
+        {
+            if (sf::Keyboard::Space == event.key.code)
+            {
+                context.audio.play("pause");
+                context.states.setChangePending(State::Pause);
+                return;
+            }
         }
 
         context.starship.handleEvent(context, event);
+    }
 
-        if (event.type != sf::Event::KeyPressed)
-        {
-            return;
-        }
+    void PauseState::handleEvent(Context & context, const sf::Event & event)
+    {
+        StateBase::handleCloseEvents(context, event);
 
-        if (sf::Keyboard::Escape == event.key.code)
+        if (event.type == sf::Event::KeyPressed)
         {
-            context.window.close();
-            return;
+            if (sf::Keyboard::Space == event.key.code)
+            {
+                context.audio.play("pause");
+                context.states.setChangePending(State::Play);
+                return;
+            }
         }
+    }
+
+    void PauseState::draw(Context & context)
+    {
+        StateBase::draw(context);
+        context.window.draw(m_text);
     }
 
     StateMachine::StateMachine()

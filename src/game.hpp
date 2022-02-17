@@ -8,7 +8,6 @@ namespace blast4
     {
         int ammo = 0;
         int score = 0;
-        bool is_game_over = false;
     };
 
 } // namespace blast4

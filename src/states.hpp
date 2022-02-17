@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/Window/Event.hpp>
 
 namespace blast4
@@ -42,9 +43,14 @@ namespace blast4
 
         void OnEnter(Context &) override {}
         void OnExit(Context &) override {}
-        void update(Context &) override {}
-        void draw(Context &) override {}
+        void update(Context &) override;
+        void draw(Context &) override;
         void handleEvent(Context &, const sf::Event &) override {}
+        void handleCloseEvents(Context & context, const sf::Event & event);
+
+      protected:
+        static void
+            setupTextMessage(Context & context, const std::string & message, sf::Text & text);
     };
 
     // do-nothing placeholder state for when the app is initializing
@@ -67,7 +73,6 @@ namespace blast4
       public:
         virtual ~PlayState() override {}
         State which() const override { return State::Setup; }
-        void draw(Context & context) override;
         void update(Context & context) override;
         void handleEvent(Context & context, const sf::Event & event) override;
     };
@@ -77,6 +82,12 @@ namespace blast4
       public:
         virtual ~PauseState() override {}
         State which() const override { return State::Pause; }
+        void handleEvent(Context & context, const sf::Event & event) override;
+        void draw(Context & context) override;
+        void OnEnter(Context & context) override { setupTextMessage(context, "PAUSE", m_text); }
+
+      private:
+        sf::Text m_text;
     };
 
     class EndState : public StateBase
