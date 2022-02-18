@@ -72,9 +72,14 @@ namespace blast4
         while (m_window.isOpen() && (m_states.which() != State::Teardown))
         {
             m_context.frame_time_sec = frameClock.restart().asSeconds();
+
             m_states.changeIfPending(m_context);
+
+            m_scoring.preTurn(m_context);
             handleEvents();
             update();
+            m_scoring.postTurn(m_context);
+
             draw();
         }
 

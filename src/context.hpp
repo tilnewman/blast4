@@ -32,7 +32,7 @@ namespace blast4
         Context(
             util::Random & ran,
             sf::RenderWindow & win,
-            const Settings & set,
+            Settings & set,
             Game & gam,
             Board & boa,
             TopPanel & top,
@@ -59,7 +59,7 @@ namespace blast4
 
         util::Random & random;
         sf::RenderWindow & window;
-        const Settings & settings;
+        Settings & settings;
         Game & game;
         Board & board;
         TopPanel & panel;

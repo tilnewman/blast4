@@ -32,14 +32,15 @@ namespace blast4
         float bullet_radius_ship_ratio = 0.1f;
         float text_size_ratio = 0.05f;
 
-        int score_for_killing_alien = 10;
-        int score_for_pickup = 1;
+        int ammo_per_pickup = 5;
 
-        int starting_alien_count = 4;
+        int score_for_killing_alien = 10;
+        int score_for_pickup = ammo_per_pickup;
+        int score_per_difficulty = 50;
+
+        int starting_alien_count = 3;
         int starting_ammo_pickup_count = 1;
         int starting_ammo = 10;
-
-        int ammo_per_pickup = 5;
     };
 
 } // namespace blast4

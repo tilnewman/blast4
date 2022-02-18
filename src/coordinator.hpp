@@ -8,6 +8,7 @@
 #include "context.hpp"
 #include "game.hpp"
 #include "random.hpp"
+#include "scoring.hpp"
 #include "settings.hpp"
 #include "sound-player.hpp"
 #include "starship.hpp"
@@ -49,6 +50,7 @@ namespace blast4
         Ammo m_ammo;
         StateMachine m_states;
         util::SoundPlayer m_audio;
+        Scoring m_scoring;
 
         Context m_context;
     };
