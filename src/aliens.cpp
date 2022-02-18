@@ -212,7 +212,7 @@ namespace blast4
         util::fit(alien.sprite, (context.board.shipSize() * 1.0f));
         util::setOriginToCenter(alien.sprite);
 
-        alien.sprite.setPosition(context.board.randomFreePosition(context));
+        alien.sprite.setPosition(context.board.randomFreeFarPosition(context));
 
         m_aliens.push_back(alien);
     }

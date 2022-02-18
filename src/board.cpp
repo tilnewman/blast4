@@ -260,6 +260,44 @@ namespace blast4
         return context.random.from(positions);
     }
 
+    const sf::Vector2f Board::randomFreeFarPosition(const Context & context) const
+    {
+        std::vector<sf::Vector2f> positions;
+
+        for (const float vertLane : m_vertLaneLines)
+        {
+            for (const float horizLane : m_horizLaneLines)
+            {
+                const sf::Vector2f position{ horizLane, vertLane };
+                const sf::FloatRect rect{ position - (shipSize() * 0.5f), shipSize() };
+
+                if (context.aliens.isCollision(rect))
+                {
+                    continue;
+                }
+
+                if (context.starship.intersects(rect))
+                {
+                    continue;
+                }
+
+                positions.push_back(position);
+            }
+        }
+
+        M_CHECK(!positions.empty(), "Error:  No free places to spawn on the board!");
+
+        const sf::Vector2f playerPos{ util::center(context.starship.globalBounds()) };
+
+        std::sort(std::begin(positions), std::end(positions), [&](const auto A, const auto B) {
+            const float distA{ std::abs(playerPos.x - A.x) + std::abs(playerPos.y - A.y) };
+            const float distB{ std::abs(playerPos.x - B.x) + std::abs(playerPos.y - B.y) };
+            return (distA > distB);
+        });
+
+        return *positions.begin();
+    }
+
     const sf::Vector2s Board::laneIndexes(const sf::Vector2f & position) const
     {
         sf::Vector2s indexes{ std::numeric_limits<std::size_t>::max(),

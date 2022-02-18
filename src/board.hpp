@@ -55,6 +55,7 @@ namespace blast4
         }
 
         const sf::Vector2f randomFreePosition(const Context & context) const;
+        const sf::Vector2f randomFreeFarPosition(const Context & context) const;
 
         const sf::Vector2s laneIndexes(const sf::Vector2f & position) const;
 
