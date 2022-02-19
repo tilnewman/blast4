@@ -3,6 +3,7 @@
 
 #include "aliens.hpp"
 #include "ammo.hpp"
+#include "animation-player.hpp"
 #include "board.hpp"
 #include "bullets.hpp"
 #include "context.hpp"
@@ -50,6 +51,7 @@ namespace blast4
         Ammo m_ammo;
         StateMachine m_states;
         util::SoundPlayer m_audio;
+        util::AnimationPlayer m_anim;
         Scoring m_scoring;
 
         Context m_context;

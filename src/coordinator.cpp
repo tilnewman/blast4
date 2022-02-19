@@ -21,6 +21,7 @@ namespace blast4
         , m_ammo()
         , m_states()
         , m_audio(m_random)
+        , m_anim(m_random, "media/animation")
         , m_context(
               m_random,
               m_window,
@@ -33,7 +34,8 @@ namespace blast4
               m_aliens,
               m_ammo,
               m_states,
-              m_audio)
+              m_audio,
+              m_anim)
     {}
 
     void Coordinator::play()
@@ -46,6 +48,8 @@ namespace blast4
     {
         m_audio.mediaPath("media/sound");
         m_audio.loadAll();
+
+        m_anim.loadAll();
 
         m_window.create(sf::VideoMode::getDesktopMode(), "Blast4", sf::Style::Fullscreen);
         M_CHECK(m_window.isOpen(), "Error:  Failed to open graphics window.");

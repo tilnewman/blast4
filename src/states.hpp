@@ -102,6 +102,7 @@ namespace blast4
         State which() const override { return State::End; }
         void OnEnter(Context &) override;
         void update(Context &) override;
+        void draw(Context &) override;
 
       private:
         float m_timerSec = 0.0f;
@@ -113,6 +114,7 @@ namespace blast4
       public:
         virtual ~TeardownState() override {}
         State which() const override { return State::Teardown; }
+        void draw(Context &) override {}
     };
 
     class StateMachine

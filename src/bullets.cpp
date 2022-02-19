@@ -3,6 +3,7 @@
 #include "bullets.hpp"
 
 #include "aliens.hpp"
+#include "animation-player.hpp"
 #include "board.hpp"
 #include "check-macros.hpp"
 #include "game.hpp"
@@ -37,33 +38,54 @@ namespace blast4
                 continue;
             }
 
-            const sf::FloatRect bounds = bullet.shape.getGlobalBounds();
+            const sf::FloatRect bulletBounds = bullet.shape.getGlobalBounds();
 
-            if (context.starship.intersects(bounds))
+            if (context.starship.intersects(bulletBounds))
             {
                 context.audio.play("bullet-hits-player");
+
+                const sf::FloatRect shipBounds = context.starship.globalBounds();
 
                 if (context.game.ammo <= 0)
                 {
                     context.states.setChangePending(State::End);
+
+                    const sf::Vector2f animPosition{ util::center(shipBounds) -
+                                                     (util::size(shipBounds) * 2.0f) };
+
+                    const float animSize{ util::size(shipBounds).x * 4.0f };
+
+                    context.anim.play("explode", animPosition, animSize, util::AnimConfig{ 2.0f });
                 }
                 else
                 {
                     context.game.ammo = context.game.ammo / 2;
+
+                    const sf::Vector2f animPosition{ util::center(shipBounds) -
+                                                     (util::size(shipBounds) * 0.65f) };
+
+                    const float animSize{ shipBounds.width * 1.3f };
+
+                    context.anim.play(
+                        "orbcharge",
+                        animPosition,
+                        animSize,
+                        util::AnimConfig{ 0.2f, sf::Color(0, 255, 255, 150) });
                 }
 
                 bullet.is_alive = false;
                 return;
             }
 
-            if (context.board.isCollisionWithBoardEdge(bounds))
+            if (context.board.isCollisionWithBoardEdge(bulletBounds))
             {
                 context.audio.play("bullet-hits-wall");
                 bullet.is_alive = false;
                 continue;
             }
 
-            if (context.aliens.handleBulletCollisionIf(context, bounds))
+            sf::FloatRect alienShipRect;
+            if (context.aliens.handleBulletCollisionIf(context, bulletBounds, alienShipRect))
             {
                 context.audio.play("bullet-hits-alien");
                 bullet.is_alive = false;
@@ -74,6 +96,13 @@ namespace blast4
                 }
 
                 context.aliens.placeRandom(context);
+
+                sf::Vector2f animPosition{ util::center(alienShipRect) -
+                                           (util::size(alienShipRect) * 2.0f) };
+
+                const float animSize{ alienShipRect.width * 4.0f };
+                animPosition.y -= util::size(alienShipRect).y;
+                context.anim.play("explode", animPosition, animSize, util::AnimConfig{ 2.0f });
 
                 continue;
             }
@@ -99,9 +128,24 @@ namespace blast4
                 if (bulletOuter.shape.getGlobalBounds().intersects(
                         bulletInner.shape.getGlobalBounds()))
                 {
-                    context.audio.play("bullet-hits-bullet");
                     bulletOuter.is_alive = false;
                     bulletInner.is_alive = false;
+
+                    context.audio.play("bullet-hits-bullet");
+
+                    const sf::Vector2f animPosition{
+                        util::center(bulletInner.shape.getGlobalBounds()) -
+                        (util::size(context.starship.globalBounds()) * 0.5f)
+                    };
+
+                    const float animSize{ util::size(context.starship.globalBounds()).x * 1.0f };
+
+                    context.anim.play(
+                        "lightningball",
+                        animPosition,
+                        animSize,
+                        util::AnimConfig{ 0.5f,
+                                          context.settings.bullet_color + sf::Color(75, 75, 75) });
                 }
             }
         }

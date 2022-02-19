@@ -234,7 +234,7 @@ namespace util
 
         if (loadAnimationImages(dirEntry, *imageCache))
         {
-            std::cout << "Loaded Animation: " << imageCache->toString() << std::endl;
+            // std::cout << "Loaded Animation: " << imageCache->toString() << std::endl;
             m_imageCaches.push_back(std::move(imageCache));
         }
     }
@@ -387,7 +387,7 @@ namespace util
 
         setAnimationFrame(anim, 0);
 
-        util::scaleAndCenterInside(anim.sprite, bounds);
+        util::fitAndCenterInside(anim.sprite, bounds);
         anim.sprite.setColor(anim.config.color);
     }
 

@@ -4,6 +4,7 @@
 
 #include "aliens.hpp"
 #include "ammo.hpp"
+#include "animation-player.hpp"
 #include "board.hpp"
 #include "bullets.hpp"
 #include "check-macros.hpp"
@@ -29,6 +30,7 @@ namespace blast4
         context.aliens.draw(context);
         context.starship.draw(context);
         context.bullets.draw(context);
+        context.anim.draw(context.window, {});
     }
 
     void StateBase::handleCloseEvents(Context & context, const sf::Event & event)
@@ -86,11 +88,22 @@ namespace blast4
 
     void EndState::update(Context & context)
     {
+        context.anim.update(context.frame_time_sec);
+
         m_timerSec -= context.frame_time_sec;
         if (m_timerSec < 0.0f)
         {
             context.states.setChangePending(State::Teardown);
         }
+    }
+
+    void EndState::draw(Context & context)
+    {
+        context.board.draw(context);
+        context.panel.draw(context);
+        context.ammo.draw(context);
+        context.aliens.draw(context);
+        context.anim.draw(context.window, {});
     }
 
     void PlayState::update(Context & context)
@@ -99,6 +112,7 @@ namespace blast4
         context.starship.update(context);
         context.aliens.update(context);
         context.bullets.update(context);
+        context.anim.update(context.frame_time_sec);
     }
 
     void PlayState::handleEvent(Context & context, const sf::Event & event)

@@ -4,6 +4,7 @@
 
 #include "aliens.hpp"
 #include "ammo.hpp"
+#include "animation-player.hpp"
 #include "board.hpp"
 #include "bullets.hpp"
 #include "check-macros.hpp"
@@ -81,7 +82,10 @@ namespace blast4
             }
         }
 
-        if (context.ammo.handleCollisionIf(context, m_sprite.getGlobalBounds()))
+        // after moving, capture position
+        const sf::FloatRect bounds = m_sprite.getGlobalBounds();
+
+        if (context.ammo.handleCollisionIf(context, bounds))
         {
             context.audio.play("pickup");
             context.game.ammo += context.settings.ammo_per_pickup;
@@ -89,10 +93,14 @@ namespace blast4
             context.ammo.placeRandom(context);
         }
 
-        if (context.aliens.isCollision(m_sprite.getGlobalBounds()))
+        if (context.aliens.isCollision(bounds))
         {
             context.audio.play("bullet-hits-player");
             context.states.setChangePending(State::End);
+
+            const sf::Vector2f animPosition{ util::center(bounds) - (util::size(bounds) * 2.0f) };
+            const float animSize{ bounds.width * 4.0f };
+            context.anim.play("explode", animPosition, animSize, util::AnimConfig{ 2.0f });
         }
     }
 

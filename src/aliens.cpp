@@ -235,7 +235,8 @@ namespace blast4
         return false;
     }
 
-    bool Aliens::handleBulletCollisionIf(Context &, const sf::FloatRect & bulletRect)
+    bool Aliens::handleBulletCollisionIf(
+        Context &, const sf::FloatRect & bulletRect, sf::FloatRect & collidingRect)
     {
         for (Alien & alien : m_aliens)
         {
@@ -246,6 +247,7 @@ namespace blast4
 
             if (alien.sprite.getGlobalBounds().intersects(bulletRect))
             {
+                collidingRect = alien.sprite.getGlobalBounds();
                 alien.is_alive = false;
                 return true;
             }

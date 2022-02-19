@@ -1,5 +1,5 @@
-#ifndef CANNONS_ANIMATION_HPP_INCLUDED
-#define CANNONS_ANIMATION_HPP_INCLUDED
+#ifndef BLAST4_ANIMATION_PLAYER_HPP_INCLUDED
+#define BLAST4_ANIMATION_PLAYER_HPP_INCLUDED
 //
 // animation-player.hpp
 //
@@ -45,7 +45,7 @@ namespace util
     //
     //  seizure-inducing-flashes-256x512
     //
-    // The last number can be skipped if it's the same.
+    // The last number can be skipped if it's the same:
     //  immorally-suggestive-cartoon-128x
     //
     // If multiple animations directories start with the same name...
@@ -193,4 +193,4 @@ namespace util
     };
 } // namespace util
 
-#endif // CANNONS_ANIMATION_HPP_INCLUDED
+#endif // BLAST4_ANIMATION_PLAYER_HPP_INCLUDED

@@ -35,7 +35,9 @@ namespace blast4
         void draw(Context & context) const;
         void placeRandom(Context & context);
         bool isCollision(const sf::FloatRect & rect) const;
-        bool handleBulletCollisionIf(Context & context, const sf::FloatRect & bulletRect);
+
+        bool handleBulletCollisionIf(
+            Context & context, const sf::FloatRect & bulletRect, sf::FloatRect & collidingRect);
 
       private:
         sf::Texture m_texture1;

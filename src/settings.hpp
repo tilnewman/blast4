@@ -36,7 +36,7 @@ namespace blast4
 
         int score_for_killing_alien = 10;
         int score_for_pickup = ammo_per_pickup;
-        int score_per_difficulty = 50;
+        int score_per_difficulty = 100;
 
         int starting_alien_count = 3;
         int starting_ammo_pickup_count = 1;

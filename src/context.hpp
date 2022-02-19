@@ -12,6 +12,7 @@ namespace util
 {
     class Random;
     class SoundPlayer;
+    class AnimationPlayer;
 } // namespace util
 
 namespace blast4
@@ -41,7 +42,8 @@ namespace blast4
             Aliens & ali,
             Ammo & amm,
             StateMachine & sm,
-            util::SoundPlayer & sou)
+            util::SoundPlayer & sou,
+            util::AnimationPlayer & ani)
             : random(ran)
             , window(win)
             , settings(set)
@@ -54,6 +56,7 @@ namespace blast4
             , ammo(amm)
             , states(sm)
             , audio(sou)
+            , anim(ani)
             , frame_time_sec(0.0f)
         {}
 
@@ -69,6 +72,7 @@ namespace blast4
         Ammo & ammo;
         StateMachine & states;
         util::SoundPlayer & audio;
+        util::AnimationPlayer & anim;
 
         float frame_time_sec;
     };
