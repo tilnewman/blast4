@@ -26,7 +26,7 @@ namespace blast4
 
     void Starship::setup(Context & context)
     {
-        m_texture.loadFromFile("media/image/player-ship.png");
+        m_texture.loadFromFile((context.settings.media_path / "image/player-ship.png").string());
         m_sprite.setTexture(m_texture);
         m_sprite.setColor(context.settings.ship_color);
         util::fit(m_sprite, (context.board.shipSize() * 0.9f));

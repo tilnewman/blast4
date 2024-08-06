@@ -21,7 +21,7 @@ namespace blast4
         , m_ammo()
         , m_states()
         , m_audio(m_random)
-        , m_anim(m_random, "media/animation")
+        , m_anim(m_random, (settings.media_path / "animation").string())
         , m_context(
               m_random,
               m_window,
@@ -46,7 +46,7 @@ namespace blast4
 
     void Coordinator::setup()
     {
-        m_audio.mediaPath("media/sound");
+        m_audio.mediaPath(m_settings.media_path / "sound");
         m_audio.loadAll();
 
         m_anim.loadAll();

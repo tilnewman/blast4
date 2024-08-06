@@ -27,8 +27,10 @@ namespace blast4
 
     void TopPanel::setup(Context & context)
     {
-        m_titleFont.loadFromFile("media/font/game-over/game-over.ttf");
-        m_generalFont.loadFromFile("media/font/d-din/d-din.ttf");
+        m_titleFont.loadFromFile(
+            (context.settings.media_path / "font/game-over/game-over.ttf").string());
+
+        m_generalFont.loadFromFile((context.settings.media_path / "font/d-din/d-din.ttf").string());
 
         m_windowSize = sf::Vector2f{ context.window.getSize() };
         m_boardRect = context.board.rect();

@@ -24,7 +24,7 @@ namespace blast4
 
     void Ammo::setup(Context & context)
     {
-        m_texture.loadFromFile("media/image/ammo.png");
+        m_texture.loadFromFile((context.settings.media_path / "image/ammo.png").string());
 
         for (int i = 0; i < context.settings.starting_ammo_pickup_count; ++i)
         {

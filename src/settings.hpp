@@ -1,6 +1,8 @@
 #ifndef BLAST4_SETTINGS_HPP
 #define BLAST4_SETTINGS_HPP
 
+#include <filesystem>
+
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
 
@@ -9,6 +11,8 @@ namespace blast4
 
     struct Settings
     {
+        std::filesystem::path media_path{ "./media" };
+
         sf::Color background_color = sf::Color(27, 31, 35);
         sf::Color board_color = sf::Color::Black;
         sf::Color block_color = sf::Color(45, 55, 60);

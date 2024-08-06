@@ -138,8 +138,8 @@ namespace blast4
 
     void Aliens::setup(Context & context)
     {
-        m_texture1.loadFromFile("media/image/alien-ship-1.png");
-        m_texture2.loadFromFile("media/image/alien-ship-2.png");
+        m_texture1.loadFromFile((context.settings.media_path / "image/alien-ship-1.png").string());
+        m_texture2.loadFromFile((context.settings.media_path / "image/alien-ship-2.png").string());
 
         for (int i = 0; i < context.settings.starting_alien_count; ++i)
         {
