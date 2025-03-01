@@ -6,8 +6,8 @@ namespace blast4
 
     struct Game
     {
-        int ammo = 0;
-        int score = 0;
+        int ammo{ 0 };
+        int score{ 0 };
     };
 
 } // namespace blast4

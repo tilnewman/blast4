@@ -38,13 +38,13 @@ namespace blast4
                 continue;
             }
 
-            const sf::FloatRect bulletBounds = bullet.shape.getGlobalBounds();
+            const sf::FloatRect bulletBounds{ bullet.shape.getGlobalBounds() };
 
             if (context.starship.intersects(bulletBounds))
             {
                 context.audio.play("bullet-hits-player");
 
-                const sf::FloatRect shipBounds = context.starship.globalBounds();
+                const sf::FloatRect shipBounds{ context.starship.globalBounds() };
 
                 if (context.game.ammo <= 0)
                 {
@@ -150,12 +150,7 @@ namespace blast4
             }
         }
 
-        m_bullets.erase(
-            std::remove_if(
-                std::begin(m_bullets),
-                std::end(m_bullets),
-                [](const Bullet & b) { return !b.is_alive; }),
-            std::end(m_bullets));
+        std::erase_if(m_bullets, [](const Bullet & bullet) { return !bullet.is_alive; });
     }
 
     void Bullets::draw(Context & context) const
@@ -173,17 +168,14 @@ namespace blast4
         const sf::Vector2f & unit_velocity)
     {
         Bullet bullet;
-
         bullet.is_alive = true;
         bullet.is_from_player = isFromPlayer;
         bullet.velocity = (unit_velocity * context.settings.bullet_speed);
         bullet.shape.setFillColor(context.settings.bullet_color);
-        bullet.shape.setOutlineColor(context.settings.bullet_color);
-        bullet.shape.setOutlineThickness(0.0f);
         bullet.shape.setPointCount(10);
 
-        const float radius =
-            (context.settings.bullet_radius_ship_ratio * context.board.shipSize().x);
+        const float radius{ context.settings.bullet_radius_ship_ratio *
+                            context.board.shipSize().x };
 
         bullet.shape.setRadius(radius);
 
@@ -215,7 +207,7 @@ namespace blast4
         // so that it doesn't hit the ship that fired it
         bullet.shape.setPosition({ startPosition + (unit_velocity * (radius * 1.5f)) });
 
-        const sf::FloatRect bulletBounds = bullet.shape.getGlobalBounds();
+        const sf::FloatRect bulletBounds{ bullet.shape.getGlobalBounds() };
 
         if (shipBounds.findIntersection(bulletBounds) ||
             context.board.isCollisionWithBlock(bulletBounds) ||

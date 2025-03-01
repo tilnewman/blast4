@@ -10,11 +10,14 @@ namespace blast4
       public:
         Scoring();
 
-        void preTurn(const Context & context);
-        void postTurn(Context & context);
+        void preTurn(const Context & t_context);
+        void postTurn(Context & t_context);
 
       private:
-        bool hasScoreIncreasedBy(const int amount) const;
+        [[nodiscard]] inline bool hasScoreIncreasedBy(const int t_amount) const noexcept
+        {
+            return ((m_scoreAfter / t_amount) > (m_scoreBefore / t_amount));
+        }
 
       private:
         int m_scoreBefore;

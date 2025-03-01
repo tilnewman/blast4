@@ -24,28 +24,28 @@ namespace blast4
         , m_sprite(m_texture)
     {}
 
-    void Starship::setup(Context & context)
+    void Starship::setup(Context & t_context)
     {
         util::TextureLoader::load(
-            m_texture, (context.settings.media_path / "image/player-ship.png"));
+            m_texture, (t_context.settings.media_path / "image/player-ship.png"));
 
         m_sprite.setTexture(m_texture, true);
-        m_sprite.setColor(context.settings.ship_color);
-        util::fit(m_sprite, (context.board.shipSize() * 0.9f));
+        m_sprite.setColor(t_context.settings.ship_color);
+        util::fit(m_sprite, (t_context.board.shipSize() * 0.9f));
         util::setOriginToCenter(m_sprite);
-        m_sprite.setPosition(context.board.randomFreePosition(context));
+        m_sprite.setPosition(t_context.board.randomFreePosition(t_context));
     }
 
-    void Starship::update(Context & context)
+    void Starship::update(Context & t_context)
     {
-        const float moveAmount{ context.frame_time_sec * context.settings.ship_speed };
+        const float moveAmount{ t_context.frame_time_sec * t_context.settings.ship_speed };
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::I))
         {
             m_sprite.move({ 0.0f, -moveAmount });
 
-            if (context.board.isCollision(m_sprite.getGlobalBounds()))
+            if (t_context.board.isCollision(m_sprite.getGlobalBounds()))
             {
                 m_sprite.move({ 0.0f, moveAmount });
             }
@@ -56,7 +56,7 @@ namespace blast4
         {
             m_sprite.move({ 0.0f, moveAmount });
 
-            if (context.board.isCollision(m_sprite.getGlobalBounds()))
+            if (t_context.board.isCollision(m_sprite.getGlobalBounds()))
             {
                 m_sprite.move({ 0.0f, -moveAmount });
             }
@@ -67,7 +67,7 @@ namespace blast4
         {
             m_sprite.move({ moveAmount, 0.0f });
 
-            if (context.board.isCollision(m_sprite.getGlobalBounds()))
+            if (t_context.board.isCollision(m_sprite.getGlobalBounds()))
             {
                 m_sprite.move({ -moveAmount, 0.0f });
             }
@@ -78,41 +78,41 @@ namespace blast4
         {
             m_sprite.move({ -moveAmount, 0.0f });
 
-            if (context.board.isCollision(m_sprite.getGlobalBounds()))
+            if (t_context.board.isCollision(m_sprite.getGlobalBounds()))
             {
                 m_sprite.move({ moveAmount, 0.0f });
             }
         }
 
         // after moving, capture position
-        const sf::FloatRect bounds = m_sprite.getGlobalBounds();
+        const sf::FloatRect bounds{ m_sprite.getGlobalBounds() };
 
-        if (context.ammo.handleCollisionIf(context, bounds))
+        if (t_context.ammo.handleCollisionIf(t_context, bounds))
         {
-            context.audio.play("pickup");
-            context.game.ammo += context.settings.ammo_per_pickup;
-            context.game.score += context.settings.score_for_pickup;
-            context.ammo.placeRandom(context);
+            t_context.audio.play("pickup");
+            t_context.game.ammo += t_context.settings.ammo_per_pickup;
+            t_context.game.score += t_context.settings.score_for_pickup;
+            t_context.ammo.placeRandom(t_context);
         }
 
-        if (context.aliens.isCollision(bounds))
+        if (t_context.aliens.isCollision(bounds))
         {
-            context.audio.play("bullet-hits-player");
-            context.states.setChangePending(State::End);
+            t_context.audio.play("bullet-hits-player");
+            t_context.states.setChangePending(State::End);
 
             const sf::Vector2f animPosition{ util::center(bounds) - (bounds.size * 2.0f) };
             const float animSize{ bounds.size.x * 4.0f };
-            context.anim.play("explode", animPosition, animSize, util::AnimConfig{ 2.0f });
+            t_context.anim.play("explode", animPosition, animSize, util::AnimConfig{ 2.0f });
         }
     }
 
-    void Starship::draw(Context & context) const { context.window.draw(m_sprite); }
+    void Starship::draw(Context & t_context) const { t_context.window.draw(m_sprite); }
 
-    void Starship::handleEvent(Context & context, const sf::Event & event)
+    void Starship::handleEvent(Context & t_context, const sf::Event & t_event)
     {
-        if (const auto * keyPtr = event.getIf<sf::Event::KeyPressed>())
+        if (const auto * keyPtr = t_event.getIf<sf::Event::KeyPressed>())
         {
-            const sf::FloatRect shipRect = m_sprite.getGlobalBounds();
+            const sf::FloatRect shipRect{ m_sprite.getGlobalBounds() };
 
             bool didShoot = false;
             sf::Vector2f unitVelocity;
@@ -140,20 +140,20 @@ namespace blast4
 
             if (didShoot)
             {
-                if (context.game.ammo <= 0)
+                if (t_context.game.ammo <= 0)
                 {
-                    context.audio.play("no-more-bullets");
+                    t_context.audio.play("no-more-bullets");
                     return;
                 }
 
-                if (context.bullets.create(context, true, shipRect, unitVelocity))
+                if (t_context.bullets.create(t_context, true, shipRect, unitVelocity))
                 {
-                    context.audio.play("player-shoot");
-                    --context.game.ammo;
+                    t_context.audio.play("player-shoot");
+                    --t_context.game.ammo;
                 }
                 else
                 {
-                    context.audio.play("bullet-hits-block");
+                    t_context.audio.play("bullet-hits-block");
                 }
             }
         }

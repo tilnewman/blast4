@@ -35,9 +35,4 @@ namespace blast4
         }
     }
 
-    bool Scoring::hasScoreIncreasedBy(const int amount) const
-    {
-        return ((m_scoreAfter / amount) > (m_scoreBefore / amount));
-    }
-
 } // namespace blast4

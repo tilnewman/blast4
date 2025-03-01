@@ -13,14 +13,16 @@ namespace blast4
 
     struct AmmoPickup
     {
-        AmmoPickup(const sf::Texture & texture)
+        AmmoPickup(const sf::Texture & t_texture)
             : is_alive(true)
-            , sprite(texture)
+            , sprite(t_texture)
         {}
 
         bool is_alive;
         sf::Sprite sprite;
     };
+
+    //
 
     class Ammo
     {
@@ -28,10 +30,10 @@ namespace blast4
         Ammo();
 
       public:
-        void setup(Context & context);
-        void draw(Context & context) const;
-        void placeRandom(Context & context);
-        bool handleCollisionIf(Context & context, const sf::FloatRect & rect);
+        void setup(Context & t_context);
+        void draw(Context & t_context) const;
+        void placeRandom(Context & t_context);
+        bool handleCollisionIf(Context & t_context, const sf::FloatRect & t_rect);
 
       private:
         sf::Texture m_texture;

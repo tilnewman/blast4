@@ -22,61 +22,67 @@ namespace blast4
         void setup(Context & context);
         void draw(Context & context) const;
 
-        const sf::FloatRect rect() const { return m_boardRect; }
+        [[nodiscard]] inline sf::FloatRect rect() const noexcept { return m_boardRect; }
 
-        const sf::Vector2f shipSize() const { return { m_shipLength, m_shipLength }; }
-
-        bool isCollisionWithBlock(const sf::FloatRect & rect) const;
-        bool isCollisionWithBoardEdge(const sf::FloatRect & rect) const;
-
-        bool isCollision(const sf::FloatRect & rect) const
+        [[nodiscard]] inline sf::Vector2f shipSize() const noexcept
         {
-            return (isCollisionWithBlock(rect) || isCollisionWithBoardEdge(rect));
+            return { m_shipLength, m_shipLength };
         }
 
-        float findLaneLineHoriz(const float position) const
+        [[nodiscard]] bool isCollisionWithBlock(const sf::FloatRect & t_rect) const;
+        [[nodiscard]] bool isCollisionWithBoardEdge(const sf::FloatRect & t_rect) const;
+
+        [[nodiscard]] inline bool isCollision(const sf::FloatRect & t_rect) const
         {
-            return findLaneLine(m_horizLaneLines, position);
+            return (isCollisionWithBlock(t_rect) || isCollisionWithBoardEdge(t_rect));
         }
 
-        float findLaneLineVert(const float position) const
+        [[nodiscard]] inline float findLaneLineHoriz(const float t_position) const
         {
-            return findLaneLine(m_vertLaneLines, position);
+            return findLaneLine(m_horizLaneLines, t_position);
         }
 
-        const sf::FloatRect findLaneHoriz(const sf::FloatRect & rect) const
+        [[nodiscard]] inline float findLaneLineVert(const float t_position) const
         {
-            return findLane(m_horizLanes, rect);
+            return findLaneLine(m_vertLaneLines, t_position);
         }
 
-        const sf::FloatRect findLaneVert(const sf::FloatRect & rect) const
+        [[nodiscard]] inline sf::FloatRect findLaneHoriz(const sf::FloatRect & t_rect) const
         {
-            return findLane(m_vertLanes, rect);
+            return findLane(m_horizLanes, t_rect);
         }
 
-        const sf::Vector2f randomFreePosition(const Context & context) const;
-        const sf::Vector2f randomFreeFarPosition(const Context & context) const;
+        [[nodiscard]] inline sf::FloatRect findLaneVert(const sf::FloatRect & t_rect) const
+        {
+            return findLane(m_vertLanes, t_rect);
+        }
 
-        const sf::Vector2s laneIndexes(const sf::Vector2f & position) const;
+        [[nodiscard]] sf::Vector2f randomFreePosition(const Context & t_context) const;
+        [[nodiscard]] sf::Vector2f randomFreeFarPosition(const Context & t_context) const;
+        [[nodiscard]] sf::Vector2s laneIndexes(const sf::Vector2f & t_position) const;
 
-        const std::vector<float> findLaneLinesOtherThanHoriz(const std::size_t indexToAvoid) const;
-        const std::vector<float> findLaneLinesOtherThanVert(const std::size_t indexToAvoid) const;
+        [[nodiscard]] std::vector<float>
+            findLaneLinesOtherThanHoriz(const std::size_t t_indexToAvoid) const;
+
+        [[nodiscard]] std::vector<float>
+            findLaneLinesOtherThanVert(const std::size_t t_indexToAvoid) const;
 
       private:
-        float findLaneLine(const std::vector<float> & lines, const float position) const;
+        [[nodiscard]] float
+            findLaneLine(const std::vector<float> & t_lines, const float t_position) const;
 
-        const sf::FloatRect
-            findLane(const std::vector<sf::FloatRect> & lanes, const sf::FloatRect & rect) const;
+        [[nodiscard]] sf::FloatRect
+            findLane(const std::vector<sf::FloatRect> & t_lanes, const sf::FloatRect & t_rect) const;
 
       private:
         sf::Vector2f m_windowSize;
-        float m_shipLength = 0.0f;
+        float m_shipLength;
         sf::FloatRect m_boardRect;
         std::vector<sf::FloatRect> m_blockRects;
 
-        std::vector<sf::Vertex> m_blockVerts;
-        std::vector<sf::Vertex> m_borderVerts;
-        std::vector<sf::Vertex> m_backgroundVerts;
+        std::vector<sf::RectangleShape> m_blockRectangles;
+        sf::RectangleShape m_borderReectangle;
+        sf::RectangleShape m_backgroundRectangle;
 
         std::vector<sf::FloatRect> m_horizLanes;
         std::vector<sf::FloatRect> m_vertLanes;

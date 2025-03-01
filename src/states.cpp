@@ -19,160 +19,159 @@
 namespace blast4
 {
 
-    void StateBase::update(Context & context) { context.panel.update(context); }
+    void StateBase::update(Context & t_context) { t_context.panel.update(t_context); }
 
-    void StateBase::draw(Context & context)
+    void StateBase::draw(Context & t_context)
     {
-        context.board.draw(context);
-        context.panel.draw(context);
-        context.ammo.draw(context);
-        context.aliens.draw(context);
-        context.starship.draw(context);
-        context.bullets.draw(context);
-        context.anim.draw(context.window, {});
+        t_context.board.draw(t_context);
+        t_context.panel.draw(t_context);
+        t_context.ammo.draw(t_context);
+        t_context.aliens.draw(t_context);
+        t_context.starship.draw(t_context);
+        t_context.bullets.draw(t_context);
+        t_context.anim.draw(t_context.window, {});
     }
 
-    void StateBase::handleCloseEvents(Context & context, const sf::Event & event)
+    void StateBase::handleCloseEvents(Context & t_context, const sf::Event & t_event)
     {
-        if (event.is<sf::Event::Closed>())
+        if (t_event.is<sf::Event::Closed>())
         {
-            context.window.close();
+            t_context.window.close();
         }
-        else if (const auto * keyPtr = event.getIf<sf::Event::KeyPressed>())
+        else if (const auto * keyPtr = t_event.getIf<sf::Event::KeyPressed>())
         {
             if (sf::Keyboard::Scancode::Escape == keyPtr->scancode)
             {
-                context.window.close();
+                t_context.window.close();
             }
         }
     }
 
-    void
-        StateBase::setupTextMessage(Context & context, const std::string & message, sf::Text & text)
+    void StateBase::setupTextMessage(
+        Context & t_context, const std::string & t_message, sf::Text & t_text)
     {
-        text.setFont(context.panel.titleFont());
-        text.setFillColor(context.settings.title_color);
-        text.setCharacterSize(200);
-        text.setString(message);
-        util::setOriginToPosition(text);
+        t_text.setFont(t_context.panel.titleFont());
+        t_text.setFillColor(t_context.settings.title_color);
+        t_text.setCharacterSize(200);
+        t_text.setString(t_message);
+        util::setOriginToPosition(t_text);
 
-        const sf::FloatRect boardRect = context.board.rect();
+        const sf::FloatRect boardRect{ t_context.board.rect() };
         const float height{ boardRect.size.y * 0.2f };
         const sf::FloatRect fitRect{ { 0.0f, 0.0f }, { boardRect.size.x, height } };
-        util::fit(text, fitRect);
-
-        text.setPosition(util::center(boardRect) - (util::size(text) * 0.5f));
+        util::fit(t_text, fitRect);
+        t_text.setPosition(util::center(boardRect) - (util::size(t_text) * 0.5f));
     }
 
-    void StartState::OnEnter(Context & context)
+    void StartState::OnEnter(Context & t_context)
     {
         m_timerSec = 5.0f;
-        context.audio.play("game-start");
+        t_context.audio.play("game-start");
     }
 
-    void StartState::update(Context & context)
+    void StartState::update(Context & t_context)
     {
-        m_timerSec -= context.frame_time_sec;
+        m_timerSec -= t_context.frame_time_sec;
         if (m_timerSec < 0.0f)
         {
-            context.states.setChangePending(State::Play);
+            t_context.states.setChangePending(State::Play);
         }
     }
 
-    void EndState::OnEnter(Context & context)
+    void EndState::OnEnter(Context & t_context)
     {
         m_timerSec = 5.0f;
-        context.audio.play("game-end");
+        t_context.audio.play("game-end");
     }
 
-    void EndState::update(Context & context)
+    void EndState::update(Context & t_context)
     {
-        context.anim.update(context.frame_time_sec);
+        t_context.anim.update(t_context.frame_time_sec);
 
-        m_timerSec -= context.frame_time_sec;
+        m_timerSec -= t_context.frame_time_sec;
         if (m_timerSec < 0.0f)
         {
-            context.states.setChangePending(State::Teardown);
+            t_context.states.setChangePending(State::Teardown);
         }
     }
 
-    void EndState::draw(Context & context)
+    void EndState::draw(Context & t_context)
     {
-        context.board.draw(context);
-        context.panel.draw(context);
-        context.ammo.draw(context);
-        context.aliens.draw(context);
-        context.anim.draw(context.window, {});
+        t_context.board.draw(t_context);
+        t_context.panel.draw(t_context);
+        t_context.ammo.draw(t_context);
+        t_context.aliens.draw(t_context);
+        t_context.anim.draw(t_context.window, {});
     }
 
-    void PlayState::update(Context & context)
+    void PlayState::update(Context & t_context)
     {
-        StateBase::update(context);
-        context.starship.update(context);
-        context.aliens.update(context);
-        context.bullets.update(context);
-        context.anim.update(context.frame_time_sec);
+        StateBase::update(t_context);
+        t_context.starship.update(t_context);
+        t_context.aliens.update(t_context);
+        t_context.bullets.update(t_context);
+        t_context.anim.update(t_context.frame_time_sec);
     }
 
-    void PlayState::handleEvent(Context & context, const sf::Event & event)
+    void PlayState::handleEvent(Context & t_context, const sf::Event & t_event)
     {
-        StateBase::handleCloseEvents(context, event);
+        StateBase::handleCloseEvents(t_context, t_event);
 
-        if (const auto * keyPtr = event.getIf<sf::Event::KeyPressed>())
+        if (const auto * keyPtr = t_event.getIf<sf::Event::KeyPressed>())
         {
             if (sf::Keyboard::Scancode::Space == keyPtr->scancode)
             {
-                context.audio.play("pause");
-                context.states.setChangePending(State::Pause);
+                t_context.audio.play("pause");
+                t_context.states.setChangePending(State::Pause);
                 return;
             }
         }
 
-        context.starship.handleEvent(context, event);
+        t_context.starship.handleEvent(t_context, t_event);
     }
 
-    void PauseState::handleEvent(Context & context, const sf::Event & event)
+    void PauseState::handleEvent(Context & t_context, const sf::Event & t_event)
     {
-        StateBase::handleCloseEvents(context, event);
+        StateBase::handleCloseEvents(t_context, t_event);
 
-        if (const auto * keyPtr = event.getIf<sf::Event::KeyPressed>())
+        if (const auto * keyPtr = t_event.getIf<sf::Event::KeyPressed>())
         {
             if (sf::Keyboard::Scancode::Space == keyPtr->scancode)
             {
-                context.audio.play("pause");
-                context.states.setChangePending(State::Play);
+                t_context.audio.play("pause");
+                t_context.states.setChangePending(State::Play);
                 return;
             }
         }
     }
 
-    void PauseState::draw(Context & context)
+    void PauseState::draw(Context & t_context)
     {
-        StateBase::draw(context);
-        context.window.draw(m_text);
+        StateBase::draw(t_context);
+        t_context.window.draw(m_text);
     }
 
     StateMachine::StateMachine()
-        : m_stateUPtr(factory(State::Setup))
+        : m_stateUPtr{ factory(State::Setup) }
     {}
 
-    void StateMachine::changeIfPending(Context & context)
+    void StateMachine::changeIfPending(Context & t_context)
     {
         if (!m_statePending.has_value())
         {
             return;
         }
 
-        m_stateUPtr->OnExit(context);
+        m_stateUPtr->OnExit(t_context);
         m_stateUPtr = factory(m_statePending.value());
         m_statePending.reset();
-        m_stateUPtr->OnEnter(context);
+        m_stateUPtr->OnEnter(t_context);
     }
 
-    std::unique_ptr<IState> StateMachine::factory(const State state)
+    std::unique_ptr<IState> StateMachine::factory(const State t_state)
     {
         // clang-format off
-        switch (state)
+        switch (t_state)
         {
             case State::Setup:   { return std::make_unique<SetupState>(); }
             case State::Start:   { return std::make_unique<StartState>(); }

@@ -14,16 +14,18 @@ namespace blast4
 
     struct Alien
     {
-        bool is_alive = false;
-        float move_remaining = 0.0f;
-        sf::Vector2f unit_velocity;
-        float time_until_shoot_sec = 0.0f;
-        sf::Sprite sprite{ util::SfmlDefaults::instance().texture() };
+        bool move(const float t_amount);
+        bool shoot(Context & t_context);
+        void pickNewMoveToTarget(Context & t_context);
 
-        bool move(const float amount);
-        bool shoot(Context & context);
-        void pickNewMoveToTarget(Context & context);
+        bool is_alive{ false };
+        float move_remaining{ 0.0f };
+        sf::Vector2f unit_velocity{};
+        float time_until_shoot_sec{ 0.0f };
+        sf::Sprite sprite{ util::SfmlDefaults::instance().texture() };
     };
+
+    //
 
     class Aliens
     {
@@ -31,19 +33,20 @@ namespace blast4
         Aliens();
 
       public:
-        void setup(Context & context);
-        void update(Context & context);
-        void draw(Context & context) const;
-        void placeRandom(Context & context);
-        bool isCollision(const sf::FloatRect & rect) const;
+        void setup(Context & t_context);
+        void update(Context & t_context);
+        void draw(Context & t_context) const;
+        void placeRandom(Context & t_context);
+        bool isCollision(const sf::FloatRect & t_rect) const;
 
         bool handleBulletCollisionIf(
-            Context & context, const sf::FloatRect & bulletRect, sf::FloatRect & collidingRect);
+            Context & t_context,
+            const sf::FloatRect & t_bulletRect,
+            sf::FloatRect & t_collidingRectOutParam);
 
       private:
         sf::Texture m_texture1;
         sf::Texture m_texture2;
-
         std::vector<Alien> m_aliens;
     };
 

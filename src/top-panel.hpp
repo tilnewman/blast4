@@ -20,12 +20,12 @@ namespace blast4
       public:
         TopPanel();
 
-        void setup(Context & context);
-        void update(Context & context);
-        void draw(Context & context) const;
+        void setup(Context & t_context);
+        void update(Context & t_context);
+        void draw(Context & t_context) const;
 
-        const sf::Font & titleFont() const { return m_titleFont; }
-        const sf::Font & generalFont() const { return m_generalFont; }
+        [[nodiscard]] inline const sf::Font & titleFont() const noexcept { return m_titleFont; }
+        [[nodiscard]] inline const sf::Font & generalFont() const noexcept { return m_generalFont; }
 
       private:
         sf::Vector2f m_windowSize;

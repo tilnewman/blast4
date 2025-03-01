@@ -16,18 +16,20 @@ namespace blast4
       public:
         Starship();
 
-      public:
-        void setup(Context & context);
-        void update(Context & context);
-        void draw(Context & context) const;
-        void handleEvent(Context & context, const sf::Event & event);
+        void setup(Context & t_context);
+        void update(Context & t_context);
+        void draw(Context & t_context) const;
+        void handleEvent(Context & t_context, const sf::Event & t_event);
 
-        bool intersects(const sf::FloatRect & rect) const
+        [[nodiscard]] inline bool intersects(const sf::FloatRect & t_rect) const
         {
-            return m_sprite.getGlobalBounds().findIntersection(rect).has_value();
+            return m_sprite.getGlobalBounds().findIntersection(t_rect).has_value();
         }
 
-        const sf::FloatRect globalBounds() const { return m_sprite.getGlobalBounds(); }
+        [[nodiscard]] inline sf::FloatRect globalBounds() const noexcept
+        {
+            return m_sprite.getGlobalBounds();
+        }
 
       private:
         sf::Texture m_texture;

@@ -19,46 +19,44 @@ namespace blast4
 {
 
     Ammo::Ammo()
-        : m_texture()
-        , m_pickups()
+        : m_texture{}
+        , m_pickups{}
     {}
 
-    void Ammo::setup(Context & context)
+    void Ammo::setup(Context & t_context)
     {
         util::TextureLoader::load(
-            m_texture, (context.settings.media_path / "image/ammo.png").string());
+            m_texture, (t_context.settings.media_path / "image/ammo.png").string());
 
-        for (int i = 0; i < context.settings.starting_ammo_pickup_count; ++i)
+        for (int i = 0; i < t_context.settings.starting_ammo_pickup_count; ++i)
         {
-            placeRandom(context);
+            placeRandom(t_context);
         }
     }
 
-    void Ammo::draw(Context & context) const
+    void Ammo::draw(Context & t_context) const
     {
         for (const AmmoPickup & pickup : m_pickups)
         {
-            if (!pickup.is_alive)
+            if (pickup.is_alive)
             {
-                continue;
+                t_context.window.draw(pickup.sprite);
             }
-
-            context.window.draw(pickup.sprite);
         }
     }
 
-    void Ammo::placeRandom(Context & context)
+    void Ammo::placeRandom(Context & t_context)
     {
         AmmoPickup pickup(m_texture);
-        pickup.sprite.setColor(context.settings.ammo_color);
-        util::fit(pickup.sprite, (context.board.shipSize() * 0.75f));
+        pickup.sprite.setColor(t_context.settings.ammo_color);
+        util::fit(pickup.sprite, (t_context.board.shipSize() * 0.75f));
         util::setOriginToCenter(pickup.sprite);
-        pickup.sprite.setPosition(context.board.randomFreePosition(context));
+        pickup.sprite.setPosition(t_context.board.randomFreePosition(t_context));
 
         m_pickups.push_back(pickup);
     }
 
-    bool Ammo::handleCollisionIf(Context &, const sf::FloatRect & bulletRect)
+    bool Ammo::handleCollisionIf(Context &, const sf::FloatRect & t_bulletRect)
     {
         for (AmmoPickup & pickup : m_pickups)
         {
@@ -67,7 +65,7 @@ namespace blast4
                 continue;
             }
 
-            if (pickup.sprite.getGlobalBounds().findIntersection(bulletRect))
+            if (pickup.sprite.getGlobalBounds().findIntersection(t_bulletRect))
             {
                 pickup.is_alive = false;
                 return true;

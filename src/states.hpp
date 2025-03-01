@@ -1,8 +1,8 @@
 #ifndef BLAST4_STATES_HPP
 #define BLAST4_STATES_HPP
 
-#include "context.hpp"
 #include "sfml-defaults.hpp"
+#include "context.hpp"
 
 #include <memory>
 #include <optional>
@@ -29,11 +29,11 @@ namespace blast4
         virtual ~IState() {}
 
         virtual State which() const = 0;
-        virtual void OnEnter(Context & context) = 0;
-        virtual void OnExit(Context & context) = 0;
-        virtual void update(Context & context) = 0;
-        virtual void draw(Context & context) = 0;
-        virtual void handleEvent(Context & context, const sf::Event & event) = 0;
+        virtual void OnEnter(Context & t_context) = 0;
+        virtual void OnExit(Context & t_context) = 0;
+        virtual void update(Context & t_context) = 0;
+        virtual void draw(Context & t_context) = 0;
+        virtual void handleEvent(Context & t_context, const sf::Event & t_event) = 0;
     };
 
     class StateBase : public IState
@@ -47,11 +47,11 @@ namespace blast4
         void update(Context &) override;
         void draw(Context &) override;
         void handleEvent(Context &, const sf::Event &) override {}
-        void handleCloseEvents(Context & context, const sf::Event & event);
+        void handleCloseEvents(Context & t_context, const sf::Event & t_event);
 
       protected:
         static void
-            setupTextMessage(Context & context, const std::string & message, sf::Text & text);
+            setupTextMessage(Context & t_context, const std::string & t_message, sf::Text & t_text);
     };
 
     // do-nothing placeholder state for when the app is initializing
@@ -71,7 +71,7 @@ namespace blast4
         void update(Context &) override;
 
       private:
-        float m_timerSec = 0.0f;
+        float m_timerSec{ 0.0f };
     };
 
     class PlayState : public StateBase
@@ -79,8 +79,8 @@ namespace blast4
       public:
         virtual ~PlayState() override {}
         State which() const override { return State::Setup; }
-        void update(Context & context) override;
-        void handleEvent(Context & context, const sf::Event & event) override;
+        void update(Context & t_context) override;
+        void handleEvent(Context & t_context, const sf::Event & t_event) override;
     };
 
     class PauseState : public StateBase
@@ -93,9 +93,9 @@ namespace blast4
 
         virtual ~PauseState() override {}
         State which() const override { return State::Pause; }
-        void handleEvent(Context & context, const sf::Event & event) override;
-        void draw(Context & context) override;
-        void OnEnter(Context & context) override { setupTextMessage(context, "PAUSE", m_text); }
+        void handleEvent(Context & t_context, const sf::Event & t_event) override;
+        void draw(Context & t_context) override;
+        void OnEnter(Context & t_context) override { setupTextMessage(t_context, "PAUSE", m_text); }
 
       private:
         sf::Text m_text;
@@ -111,7 +111,7 @@ namespace blast4
         void draw(Context &) override;
 
       private:
-        float m_timerSec = 0.0f;
+        float m_timerSec{ 0.0f };
     };
 
     // do-nothing placeholder state for when the app is exiting
@@ -129,16 +129,17 @@ namespace blast4
         StateMachine();
 
       public:
-        State which() const { return m_stateUPtr->which(); }
-        IState & state() { return *m_stateUPtr; }
-        void setChangePending(const State nextState) { m_statePending = nextState; }
-        void changeIfPending(Context & context);
-        static std::unique_ptr<IState> factory(const State state);
+        [[nodiscard]] inline State which() const { return m_stateUPtr->which(); }
+        [[nodiscard]] inline IState & state() { return *m_stateUPtr; }
+        inline void setChangePending(const State t_nextState) noexcept { m_statePending = t_nextState; }
+        void changeIfPending(Context & t_context);
+        static std::unique_ptr<IState> factory(const State t_state);
 
       private:
         // must always point to a valid state
         std::unique_ptr<IState> m_stateUPtr;
 
+        //only has a value when a new state is pending
         std::optional<State> m_statePending;
     };
 

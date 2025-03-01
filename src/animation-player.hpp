@@ -24,13 +24,13 @@ namespace util
         }
 
         explicit AnimConfig(
-            const float durationSec,
-            const sf::Color colorParam = sf::Color::White,
-            const sf::BlendMode blendModeParam = sf::BlendAlpha)
+            const float t_durationSec,
+            const sf::Color t_color = sf::Color::White,
+            const sf::BlendMode t_blendMode = sf::BlendAlpha)
             : is_default(false)
-            , duration_sec(durationSec)
-            , color(colorParam)
-            , blend_mode(blendModeParam)
+            , duration_sec(t_durationSec)
+            , color(t_color)
+            , blend_mode(t_blendMode)
         {}
 
         bool is_default;
@@ -77,14 +77,14 @@ namespace util
         struct ImageCache
         {
             ImageCache(
-                const std::size_t indexParam,
-                const std::string & nameParam,
-                const AnimConfig & configParam,
-                const sf::Vector2f & sizeParam)
-                : config(configParam)
-                , index(indexParam)
-                , frame_size(sizeParam)
-                , animation_name(nameParam)
+                const std::size_t t_index,
+                const std::string & t_name,
+                const AnimConfig & t_config,
+                const sf::Vector2f & t_size)
+                : config(t_config)
+                , index(t_index)
+                , frame_size(t_size)
+                , animation_name(t_name)
                 , frame_count(0)
                 , images()
             {}
@@ -110,75 +110,87 @@ namespace util
         };
 
       public:
-        explicit AnimationPlayer(const Random & random, const std::string & pathStr = {});
+        explicit AnimationPlayer(const Random & t_random, const std::string & t_pathStr = {});
 
-        std::size_t playingAtOnceMax() const { return m_maxPlayingAtOnceCount; }
-        void playingAtOnceMax(const std::size_t maxCount) { m_maxPlayingAtOnceCount = maxCount; }
-
-        bool loadAll(const AnimConfig & config = {});
-        bool load(const std::initializer_list<std::string> names, const AnimConfig & config = {});
-        bool load(const std::string & name, const AnimConfig & config = {});
-
-        void configure(const std::string & name, const AnimConfig & config);
-
-        void play(
-            const std::string & name, const sf::FloatRect & bounds, const AnimConfig & config = {});
-
-        inline void play(
-            const std::string & name,
-            const sf::Vector2f & pos,
-            const float size,
-            const AnimConfig & config = {})
+        [[nodiscard]] inline std::size_t playingAtOnceMax() const noexcept
         {
-            play(name, sf::FloatRect(pos, sf::Vector2f(size, size)), config);
+            return m_maxPlayingAtOnceCount;
         }
 
-        void stop(const std::string & name);
-        void update(const float elapsedTimeSec);
-        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+        inline void playingAtOnceMax(const std::size_t t_maxCount) noexcept
+        {
+            m_maxPlayingAtOnceCount = t_maxCount;
+        }
+
+        bool loadAll(const AnimConfig & t_config = {});
+
+        bool load(
+            const std::initializer_list<std::string> t_names, const AnimConfig & t_config = {});
+
+        bool load(const std::string & t_name, const AnimConfig & t_config = {});
+
+        void configure(const std::string & t_name, const AnimConfig & t_config);
+
+        void play(
+            const std::string & t_name,
+            const sf::FloatRect & t_bounds,
+            const AnimConfig & t_config = {});
+
+        inline void play(
+            const std::string & t_name,
+            const sf::Vector2f & t_pos,
+            const float t_size,
+            const AnimConfig & t_config = {})
+        {
+            play(t_name, sf::FloatRect(t_pos, sf::Vector2f(t_size, t_size)), t_config);
+        }
+
+        void stop(const std::string & t_name);
+        void update(const float t_elapsedTimeSec);
+        void draw(sf::RenderTarget & t_target, sf::RenderStates t_states) const override;
         void stopAll();
         void reset();
 
       private:
         void loadAnimationDirectories(
-            const std::string & nameToLoad = "", const AnimConfig & config = {});
+            const std::string & t_name = "", const AnimConfig & t_config = {});
 
         bool willLoadAnimationDirectory(
-            const std::filesystem::directory_entry & dirEntry,
-            ParsedDirectoryName & parse,
-            const std::string & nameToLoad = "") const;
+            const std::filesystem::directory_entry & t_dirEntry,
+            ParsedDirectoryName & t_parse,
+            const std::string & t_name = "") const;
 
         void loadAnimationDirectory(
-            const std::filesystem::directory_entry & dirEntry,
-            const ParsedDirectoryName & parse,
-            const AnimConfig & config);
+            const std::filesystem::directory_entry & t_dirEntry,
+            const ParsedDirectoryName & t_parse,
+            const AnimConfig & t_config);
 
         //
 
         bool loadAnimationImages(
-            const std::filesystem::directory_entry & dirEntry, ImageCache & cache) const;
+            const std::filesystem::directory_entry & t_dirEntry, ImageCache & t_cache) const;
 
-        bool willLoadAnimationImage(const std::filesystem::directory_entry & fileEntry) const;
+        bool willLoadAnimationImage(const std::filesystem::directory_entry & t_fileEntry) const;
 
         bool loadAnimationImage(
-            const std::filesystem::directory_entry & fileEntry, ImageCache & cache) const;
+            const std::filesystem::directory_entry & t_fileEntry, ImageCache & t_cache) const;
 
         //
 
-        ParsedDirectoryName parseDirectoryName(const std::string & name) const;
+        ParsedDirectoryName parseDirectoryName(const std::string & t_name) const;
 
         Animation & getAvailableAnimation();
 
-        void updateAnimation(Animation & anim, const float elapsedTimeSec) const;
+        void updateAnimation(Animation & t_anim, const float t_elapsedTimeSec) const;
 
-        void setAnimationFrame(Animation & anim, const std::size_t newFrameIndex) const;
+        void setAnimationFrame(Animation & t_anim, const std::size_t t_newFrameIndex) const;
 
-        std::vector<std::size_t> findCacheIndexesByName(const std::string & name) const;
+        std::vector<std::size_t> findCacheIndexesByName(const std::string & t_name) const;
 
         void createAnimation(
-            const std::vector<std::size_t> & possibleCacheIndexes,
-            const sf::FloatRect & bounds,
-            const AnimConfig & config);
+            const std::vector<std::size_t> & t_possibleCacheIndexes,
+            const sf::FloatRect & t_bounds,
+            const AnimConfig & t_config);
 
       private:
         const Random & m_random;

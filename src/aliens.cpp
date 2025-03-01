@@ -18,12 +18,12 @@
 namespace blast4
 {
 
-    bool Alien::move(const float amount)
+    bool Alien::move(const float t_amount)
     {
         if (move_remaining > 0.0f)
         {
-            sprite.move(unit_velocity * amount);
-            move_remaining -= amount;
+            sprite.move(unit_velocity * t_amount);
+            move_remaining -= t_amount;
             return true;
         }
         else
@@ -32,17 +32,17 @@ namespace blast4
         }
     }
 
-    void Alien::pickNewMoveToTarget(Context & context)
+    void Alien::pickNewMoveToTarget(Context & t_context)
     {
-        const sf::Vector2f alienPosition = util::center(sprite);
-        const sf::Vector2s laneIndexes = context.board.laneIndexes(alienPosition);
+        const sf::Vector2f alienPosition{ util::center(sprite) };
+        const sf::Vector2s laneIndexes{ t_context.board.laneIndexes(alienPosition) };
 
-        if (context.random.boolean())
+        if (t_context.random.boolean())
         {
-            const std::vector<float> laneLinesHoriz =
-                context.board.findLaneLinesOtherThanHoriz(laneIndexes.x);
+            const std::vector<float> laneLinesHoriz{ t_context.board.findLaneLinesOtherThanHoriz(
+                laneIndexes.x) };
 
-            const float laneLineHoriz = context.random.from(laneLinesHoriz);
+            const float laneLineHoriz{ t_context.random.from(laneLinesHoriz) };
 
             move_remaining = std::abs(alienPosition.x - laneLineHoriz);
 
@@ -58,10 +58,10 @@ namespace blast4
         }
         else
         {
-            const std::vector<float> laneLinesVert =
-                context.board.findLaneLinesOtherThanVert(laneIndexes.y);
+            const std::vector<float> laneLinesVert{ t_context.board.findLaneLinesOtherThanVert(
+                laneIndexes.y) };
 
-            const float laneLineVert = context.random.from(laneLinesVert);
+            const float laneLineVert{ t_context.random.from(laneLinesVert) };
 
             move_remaining = std::abs(alienPosition.y - laneLineVert);
 
@@ -77,23 +77,23 @@ namespace blast4
         }
     }
 
-    bool Alien::shoot(Context & context)
+    bool Alien::shoot(Context & t_context)
     {
         if (time_until_shoot_sec > 0.0f)
         {
-            time_until_shoot_sec -= context.frame_time_sec;
+            time_until_shoot_sec -= t_context.frame_time_sec;
             return false;
         }
         else
         {
-            time_until_shoot_sec = context.random.fromTo(
-                context.settings.alien_shoot_delay_min_sec,
-                context.settings.alien_shoot_delay_max_sec);
+            time_until_shoot_sec = t_context.random.fromTo(
+                t_context.settings.alien_shoot_delay_min_sec,
+                t_context.settings.alien_shoot_delay_max_sec);
 
-            const sf::FloatRect alienBoounds = sprite.getGlobalBounds();
-            const sf::Vector2f alienPosition = util::center(alienBoounds);
-            const sf::Vector2f playerPosition = util::center(context.starship.globalBounds());
-            const sf::Vector2f positionDiff = (playerPosition - alienPosition);
+            const sf::FloatRect alienBoounds{ sprite.getGlobalBounds() };
+            const sf::Vector2f alienPosition{ util::center(alienBoounds) };
+            const sf::Vector2f playerPosition{ util::center(t_context.starship.globalBounds()) };
+            const sf::Vector2f positionDiff{ (playerPosition - alienPosition) };
 
             sf::Vector2f unitVelocity{ 0.0f, 0.0f };
             if (std::abs(positionDiff.x) > std::abs(positionDiff.y))
@@ -119,9 +119,9 @@ namespace blast4
                 }
             }
 
-            if (context.bullets.create(context, false, alienBoounds, unitVelocity))
+            if (t_context.bullets.create(t_context, false, alienBoounds, unitVelocity))
             {
-                context.audio.play("alien-shoot");
+                t_context.audio.play("alien-shoot");
                 return true;
             }
             else
@@ -131,29 +131,31 @@ namespace blast4
         }
     }
 
+    //
+
     Aliens::Aliens()
-        : m_texture1()
-        , m_texture2()
-        , m_aliens()
+        : m_texture1{}
+        , m_texture2{}
+        , m_aliens{}
     {}
 
-    void Aliens::setup(Context & context)
+    void Aliens::setup(Context & t_context)
     {
         util::TextureLoader::load(
-            m_texture1, (context.settings.media_path / "image/alien-ship-1.png"));
+            m_texture1, (t_context.settings.media_path / "image/alien-ship-1.png"));
 
         util::TextureLoader::load(
-            m_texture2, (context.settings.media_path / "image/alien-ship-2.png"));
+            m_texture2, (t_context.settings.media_path / "image/alien-ship-2.png"));
 
-        for (int i = 0; i < context.settings.starting_alien_count; ++i)
+        for (int i = 0; i < t_context.settings.starting_alien_count; ++i)
         {
-            placeRandom(context);
+            placeRandom(t_context);
         }
     }
 
-    void Aliens::update(Context & context)
+    void Aliens::update(Context & t_context)
     {
-        const float moveAmount{ context.frame_time_sec * context.settings.ship_speed };
+        const float moveAmount{ t_context.frame_time_sec * t_context.settings.ship_speed };
 
         for (Alien & alien : m_aliens)
         {
@@ -162,7 +164,7 @@ namespace blast4
                 continue;
             }
 
-            alien.shoot(context);
+            alien.shoot(t_context);
 
             if (alien.move(moveAmount))
             {
@@ -170,40 +172,34 @@ namespace blast4
             }
             else
             {
-                alien.pickNewMoveToTarget(context);
+                alien.pickNewMoveToTarget(t_context);
             }
         }
 
-        m_aliens.erase(
-            std::remove_if(
-                std::begin(m_aliens),
-                std::end(m_aliens),
-                [](const Alien & alien) { return !alien.is_alive; }),
-            std::end(m_aliens));
+        std::erase_if(m_aliens, [](const Alien & alien) { return !alien.is_alive; });
     }
 
-    void Aliens::draw(Context & context) const
+    void Aliens::draw(Context & t_context) const
     {
         for (const Alien & alien : m_aliens)
         {
-            if (!alien.is_alive)
+            if (alien.is_alive)
             {
-                continue;
+                t_context.window.draw(alien.sprite);
             }
-
-            context.window.draw(alien.sprite);
         }
     }
 
-    void Aliens::placeRandom(Context & context)
+    void Aliens::placeRandom(Context & t_context)
     {
         Alien alien;
         alien.is_alive = true;
 
-        alien.time_until_shoot_sec = context.random.fromTo(
-            context.settings.alien_shoot_delay_min_sec, context.settings.alien_shoot_delay_max_sec);
+        alien.time_until_shoot_sec = t_context.random.fromTo(
+            t_context.settings.alien_shoot_delay_min_sec,
+            t_context.settings.alien_shoot_delay_max_sec);
 
-        if (context.random.boolean())
+        if (t_context.random.boolean())
         {
             alien.sprite.setTexture(m_texture1, true);
         }
@@ -212,16 +208,15 @@ namespace blast4
             alien.sprite.setTexture(m_texture2, true);
         }
 
-        alien.sprite.setColor(context.settings.alien_color);
-        util::fit(alien.sprite, (context.board.shipSize() * 1.0f));
+        alien.sprite.setColor(t_context.settings.alien_color);
+        util::fit(alien.sprite, (t_context.board.shipSize() * 1.0f));
         util::setOriginToCenter(alien.sprite);
-
-        alien.sprite.setPosition(context.board.randomFreeFarPosition(context));
+        alien.sprite.setPosition(t_context.board.randomFreeFarPosition(t_context));
 
         m_aliens.push_back(alien);
     }
 
-    bool Aliens::isCollision(const sf::FloatRect & rect) const
+    bool Aliens::isCollision(const sf::FloatRect & t_rect) const
     {
         for (const Alien & alien : m_aliens)
         {
@@ -230,7 +225,7 @@ namespace blast4
                 continue;
             }
 
-            if (alien.sprite.getGlobalBounds().findIntersection(rect))
+            if (alien.sprite.getGlobalBounds().findIntersection(t_rect))
             {
                 return true;
             }
@@ -240,7 +235,7 @@ namespace blast4
     }
 
     bool Aliens::handleBulletCollisionIf(
-        Context &, const sf::FloatRect & bulletRect, sf::FloatRect & collidingRect)
+        Context &, const sf::FloatRect & t_bulletRect, sf::FloatRect & t_collidingRectOutParam)
     {
         for (Alien & alien : m_aliens)
         {
@@ -249,9 +244,9 @@ namespace blast4
                 continue;
             }
 
-            if (alien.sprite.getGlobalBounds().findIntersection(bulletRect))
+            if (alien.sprite.getGlobalBounds().findIntersection(t_bulletRect))
             {
-                collidingRect = alien.sprite.getGlobalBounds();
+                t_collidingRectOutParam = alien.sprite.getGlobalBounds();
                 alien.is_alive = false;
                 return true;
             }
