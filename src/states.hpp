@@ -2,6 +2,7 @@
 #define BLAST4_STATES_HPP
 
 #include "context.hpp"
+#include "sfml-defaults.hpp"
 
 #include <memory>
 #include <optional>
@@ -85,6 +86,11 @@ namespace blast4
     class PauseState : public StateBase
     {
       public:
+        PauseState()
+            : StateBase()
+            , m_text(util::SfmlDefaults::instance().font())
+        {}
+
         virtual ~PauseState() override {}
         State which() const override { return State::Pause; }
         void handleEvent(Context & context, const sf::Event & event) override;

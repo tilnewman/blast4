@@ -66,16 +66,16 @@ namespace util
         {
             SoundEffect()
                 : filename()
-                , sound()
                 , buffer()
+                , sound(buffer)
                 , will_loop(false)
             {}
 
             std::string toString() const;
 
             std::string filename;
-            sf::Sound sound;
             sf::SoundBuffer buffer;
+            sf::Sound sound;
             bool will_loop;
         };
 

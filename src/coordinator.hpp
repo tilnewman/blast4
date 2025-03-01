@@ -32,6 +32,7 @@ namespace blast4
 
       private:
         void setup();
+        void teardown();
         void loop();
         void handleEvents();
         void handleEvent(const sf::Event & event);

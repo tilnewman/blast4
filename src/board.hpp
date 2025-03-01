@@ -2,7 +2,7 @@
 #define BLAST4_BOARD_HPP
 
 #include "context.hpp"
-#include "util.hpp"
+#include "sfml-util.hpp"
 
 #include <vector>
 

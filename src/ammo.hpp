@@ -13,7 +13,12 @@ namespace blast4
 
     struct AmmoPickup
     {
-        bool is_alive = false;
+        AmmoPickup(const sf::Texture & texture)
+            : is_alive(true)
+            , sprite(texture)
+        {}
+
+        bool is_alive;
         sf::Sprite sprite;
     };
 

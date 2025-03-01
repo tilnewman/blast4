@@ -3,7 +3,7 @@
 #include "coordinator.hpp"
 
 #include "check-macros.hpp"
-#include "util.hpp"
+#include "sfml-defaults.hpp"
 
 namespace blast4
 {
@@ -42,16 +42,19 @@ namespace blast4
     {
         setup();
         loop();
+        teardown();
     }
 
     void Coordinator::setup()
     {
+        util::SfmlDefaults::instance().setup();
+
         m_audio.mediaPath(m_settings.media_path / "sound");
         m_audio.loadAll();
 
         m_anim.loadAll();
 
-        m_window.create(sf::VideoMode::getDesktopMode(), "Blast4", sf::Style::Fullscreen);
+        m_window.create(sf::VideoMode::getDesktopMode(), "Blast4", sf::State::Fullscreen);
         M_CHECK(m_window.isOpen(), "Error:  Failed to open graphics window.");
 
         m_window.setFramerateLimit(60);
@@ -69,6 +72,8 @@ namespace blast4
         m_states.setChangePending(State::Start);
     }
 
+    void Coordinator::teardown() { util::SfmlDefaults::instance().teardown(); }
+
     void Coordinator::loop()
     {
         sf::Clock frameClock;
@@ -83,7 +88,6 @@ namespace blast4
             handleEvents();
             update();
             m_scoring.postTurn(m_context);
-
             draw();
         }
 
@@ -92,10 +96,9 @@ namespace blast4
 
     void Coordinator::handleEvents()
     {
-        sf::Event event;
-        while (m_window.pollEvent(event))
+        while (const auto eventOpt = m_window.pollEvent())
         {
-            handleEvent(event);
+            handleEvent(eventOpt.value());
         }
     }
 

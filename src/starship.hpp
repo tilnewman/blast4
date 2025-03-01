@@ -24,7 +24,7 @@ namespace blast4
 
         bool intersects(const sf::FloatRect & rect) const
         {
-            return m_sprite.getGlobalBounds().intersects(rect);
+            return m_sprite.getGlobalBounds().findIntersection(rect).has_value();
         }
 
         const sf::FloatRect globalBounds() const { return m_sprite.getGlobalBounds(); }

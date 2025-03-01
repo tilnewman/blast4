@@ -73,7 +73,7 @@ namespace util
 
         sfx.setPitch(PITCH);
 
-        if (sfx.getLoop() && (sfx.getStatus() == sf::Sound::Playing))
+        if (sfx.isLooping() && (sfx.getStatus() == sf::SoundSource::Status::Playing))
         {
             return;
         }
@@ -87,7 +87,7 @@ namespace util
 
         for (const std::size_t INDEX : findCacheIndexesByName(NAME))
         {
-            m_soundEffects.at(INDEX)->sound.setLoop(WILL_LOOP);
+            m_soundEffects.at(INDEX)->sound.setLooping(WILL_LOOP);
         }
     }
 
@@ -103,7 +103,7 @@ namespace util
     {
         for (auto & soundUPtr : m_soundEffects)
         {
-            if (soundUPtr->sound.getLoop())
+            if (soundUPtr->sound.isLooping())
             {
                 soundUPtr->sound.stop();
             }

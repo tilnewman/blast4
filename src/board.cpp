@@ -38,10 +38,10 @@ namespace blast4
         // full rect of the board
         {
             const float pad = std::floor(m_windowSize.y * context.settings.edge_pad_ratio);
-            m_boardRect.width = std::floor(m_windowSize.x - (pad * 4.0f));
-            m_boardRect.left = ((m_windowSize.x * 0.5f) - (m_boardRect.width * 0.5f));
-            m_boardRect.height = std::floor(m_windowSize.y - (pad * 4.0f));
-            m_boardRect.top = (m_windowSize.y - (pad + m_boardRect.height));
+            m_boardRect.size.x = std::floor(m_windowSize.x - (pad * 4.0f));
+            m_boardRect.position.x = ((m_windowSize.x * 0.5f) - (m_boardRect.size.x * 0.5f));
+            m_boardRect.size.y = std::floor(m_windowSize.y - (pad * 4.0f));
+            m_boardRect.position.y = (m_windowSize.y - (pad + m_boardRect.size.y));
         }
 
         // blocks that make up the halls, that the ships moves between
@@ -50,14 +50,14 @@ namespace blast4
         const sf::Vector2f shipHallSizeTotals{ ((blockCount.x + 1.0f) * m_shipLength),
                                                (blockCount.y + 1.0f) * m_shipLength };
 
-        const sf::Vector2f blockSize{ (util::size(m_boardRect) - shipHallSizeTotals) / blockCount };
+        const sf::Vector2f blockSize{ (m_boardRect.size - shipHallSizeTotals) / blockCount };
 
         std::vector<sf::Vector2f> blockPositions;
         for (int y = 0; y < context.settings.block_count.y; ++y)
         {
             for (int x = 0; x < context.settings.block_count.x; ++x)
             {
-                sf::Vector2f pos{ util::position(m_boardRect) + shipSize() };
+                sf::Vector2f pos{ m_boardRect.position + shipSize() };
 
                 pos.x += (static_cast<float>(x) * (blockSize.x + m_shipLength));
                 pos.y += (static_cast<float>(y) * (blockSize.y + m_shipLength));
@@ -66,62 +66,52 @@ namespace blast4
             }
         }
 
-        // verts that draw the board
+        // verts that draw the blocks
         for (const sf::Vector2f & blockPosition : blockPositions)
         {
             const sf::FloatRect blockRect{ blockPosition, blockSize };
-            util::appendQuadVerts(blockRect, m_blockVerts, context.settings.block_color);
+            util::appendTriangleVerts(blockRect, m_blockVerts, context.settings.block_color);
             m_blockRects.push_back(blockRect);
         }
 
-        m_backgroundVerts.resize(
-            4, sf::Vertex(util::position(m_boardRect), context.settings.board_color));
+        // verts that draw the background
+        util::appendTriangleVerts(m_boardRect, m_backgroundVerts, context.settings.board_color);
 
-        m_backgroundVerts[1].position += { m_boardRect.width, 0.0f };
-        m_backgroundVerts[2].position += { m_boardRect.width, m_boardRect.height };
-        m_backgroundVerts[3].position += { 0.0f, m_boardRect.height };
+        // verts that draw the walls
+        const sf::Vector2f pos = m_boardRect.position;
+        const float pad = (m_windowSize.x * context.settings.border_pad_ratio);
 
-        {
-            const sf::Vector2f pos = util::position(m_boardRect);
-            const float pad = (m_windowSize.x * context.settings.border_pad_ratio);
+        sf::FloatRect topWallRect;
+        topWallRect.position.x = (pos.x - pad);
+        topWallRect.position.y = (pos.y - pad);
+        topWallRect.size.x = (m_boardRect.size.x + pad);
+        topWallRect.size.y = pad;
+        util::appendTriangleVerts(topWallRect, m_backgroundVerts, context.settings.block_color);
 
-            m_borderVerts.push_back({ { pos.x - pad, pos.y - pad } });
-            m_borderVerts.push_back({ { (pos.x + m_boardRect.width + pad), pos.y - pad } });
-            m_borderVerts.push_back({ { (pos.x + m_boardRect.width + pad), pos.y } });
-            m_borderVerts.push_back({ { pos.x - pad, pos.y } });
-            //
-            m_borderVerts.push_back({ { pos.x + m_boardRect.width, pos.y - pad } });
-            m_borderVerts.push_back({ { (pos.x + m_boardRect.width + pad), pos.y - pad } });
+        sf::FloatRect rightWallRect;
+        rightWallRect.position.x = (pos.x + m_boardRect.size.x);
+        rightWallRect.position.y = (pos.y - pad);
+        rightWallRect.size.x = pad;
+        rightWallRect.size.y = (m_boardRect.size.y + pad);
+        util::appendTriangleVerts(rightWallRect, m_backgroundVerts, context.settings.block_color);
 
-            m_borderVerts.push_back(
-                { { (pos.x + m_boardRect.width + pad), (pos.y + m_boardRect.height + pad) } });
+        sf::FloatRect bottomWallRect;
+        bottomWallRect.position.x = (pos.x - pad);
+        bottomWallRect.position.y = (pos.y + m_boardRect.size.y);
+        bottomWallRect.size.x = (m_boardRect.size.x + pad + pad);
+        bottomWallRect.size.y = pad;
+        util::appendTriangleVerts(bottomWallRect, m_backgroundVerts, context.settings.block_color);
 
-            m_borderVerts.push_back(
-                { { (pos.x + m_boardRect.width), (pos.y + m_boardRect.height + pad) } });
-            //
-            m_borderVerts.push_back({ { pos.x - pad, (pos.y + m_boardRect.height) } });
-
-            m_borderVerts.push_back(
-                { { (pos.x + m_boardRect.width + pad), (pos.y + m_boardRect.height) } });
-
-            m_borderVerts.push_back(
-                { { (pos.x + m_boardRect.width + pad), (pos.y + m_boardRect.height + pad) } });
-            m_borderVerts.push_back({ { pos.x - pad, (pos.y + m_boardRect.height + pad) } });
-            //
-            m_borderVerts.push_back({ { pos.x - pad, pos.y - pad } });
-            m_borderVerts.push_back({ { pos.x, pos.y - pad } });
-            m_borderVerts.push_back({ { pos.x, (pos.y + m_boardRect.height + pad) } });
-            m_borderVerts.push_back({ { (pos.x - pad), (pos.y + m_boardRect.height + pad) } });
-
-            for (sf::Vertex & vert : m_borderVerts)
-            {
-                vert.color = context.settings.block_color;
-            }
-        }
+        sf::FloatRect leftWallRect;
+        leftWallRect.position.x = (pos.x - pad);
+        leftWallRect.position.y = pos.y;
+        leftWallRect.size.x = pad;
+        leftWallRect.size.y = m_boardRect.size.y;
+        util::appendTriangleVerts(leftWallRect, m_backgroundVerts, context.settings.block_color);
 
         // possible lanes lines of movement
-        float lane = m_boardRect.left;
-        while (lane < m_boardRect.width)
+        float lane = m_boardRect.position.x;
+        while (lane < m_boardRect.size.x)
         {
             lane += (m_shipLength * 0.5f);
             m_horizLaneLines.push_back(lane);
@@ -129,8 +119,8 @@ namespace blast4
             lane += blockSize.x;
         }
 
-        lane = m_boardRect.top;
-        while (lane < m_boardRect.height)
+        lane = m_boardRect.position.y;
+        while (lane < m_boardRect.size.y)
         {
             lane += (m_shipLength * 0.5f);
             m_vertLaneLines.push_back(lane);
@@ -138,36 +128,55 @@ namespace blast4
             lane += blockSize.y;
         }
 
-        // possible lanes of movement
         for (int y = 0; y < (context.settings.block_count.y + 1); ++y)
         {
             sf::FloatRect rect = m_boardRect;
-            rect.top = m_boardRect.top + (static_cast<float>(y) * (m_shipLength + blockSize.y));
-            rect.height = m_shipLength;
+
+            rect.position.y =
+                m_boardRect.position.y + (static_cast<float>(y) * (m_shipLength + blockSize.y));
+
+            rect.size.y = m_shipLength;
             m_horizLanes.push_back(rect);
         }
 
         for (int x = 0; x < (context.settings.block_count.x + 1); ++x)
         {
             sf::FloatRect rect = m_boardRect;
-            rect.left = m_boardRect.left + (static_cast<float>(x) * (m_shipLength + blockSize.x));
-            rect.width = m_shipLength;
+
+            rect.position.x =
+                m_boardRect.position.x + (static_cast<float>(x) * (m_shipLength + blockSize.x));
+
+            rect.size.x = m_shipLength;
             m_vertLanes.push_back(rect);
         }
     }
 
     void Board::draw(Context & context) const
     {
-        context.window.draw(&m_backgroundVerts[0], m_backgroundVerts.size(), sf::Quads);
-        context.window.draw(&m_borderVerts[0], m_borderVerts.size(), sf::Quads);
-        context.window.draw(&m_blockVerts[0], m_blockVerts.size(), sf::Quads);
+        if (!m_backgroundVerts.empty())
+        {
+            context.window.draw(
+                &m_backgroundVerts[0], m_backgroundVerts.size(), sf::PrimitiveType::Triangles);
+        }
+
+        if (!m_borderVerts.empty())
+        {
+            context.window.draw(
+                &m_borderVerts[0], m_borderVerts.size(), sf::PrimitiveType::Triangles);
+        }
+
+        if (!m_blockVerts.empty())
+        {
+            context.window.draw(
+                &m_blockVerts[0], m_blockVerts.size(), sf::PrimitiveType::Triangles);
+        }
     }
 
     bool Board::isCollisionWithBlock(const sf::FloatRect & rect) const
     {
         for (const sf::FloatRect blockRect : m_blockRects)
         {
-            if (blockRect.intersects(rect))
+            if (blockRect.findIntersection(rect))
             {
                 return true;
             }
@@ -178,7 +187,7 @@ namespace blast4
 
     bool Board::isCollisionWithBoardEdge(const sf::FloatRect & rect) const
     {
-        if (rect.top < m_boardRect.top)
+        if (rect.position.y < m_boardRect.position.y)
         {
             return true;
         }
@@ -193,7 +202,7 @@ namespace blast4
             return true;
         }
 
-        if (rect.left < m_boardRect.left)
+        if (rect.position.x < m_boardRect.position.x)
         {
             return true;
         }
@@ -221,13 +230,13 @@ namespace blast4
     {
         for (const sf::FloatRect & laneRect : lanes)
         {
-            if (laneRect.intersects(rect))
+            if (laneRect.findIntersection(rect))
             {
                 return laneRect;
             }
         }
 
-        return { 0.0f, 0.0f, 0.0f, 0.0f };
+        return { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
     }
 
     const sf::Vector2f Board::randomFreePosition(const Context & context) const

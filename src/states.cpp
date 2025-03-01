@@ -13,7 +13,6 @@
 #include "sound-player.hpp"
 #include "starship.hpp"
 #include "top-panel.hpp"
-#include "util.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -35,13 +34,13 @@ namespace blast4
 
     void StateBase::handleCloseEvents(Context & context, const sf::Event & event)
     {
-        if (event.type == sf::Event::Closed)
+        if (event.is<sf::Event::Closed>())
         {
             context.window.close();
         }
-        else if (event.type == sf::Event::KeyPressed)
+        else if (const auto * keyPtr = event.getIf<sf::Event::KeyPressed>())
         {
-            if (sf::Keyboard::Escape == event.key.code)
+            if (sf::Keyboard::Scancode::Escape == keyPtr->scancode)
             {
                 context.window.close();
             }
@@ -58,8 +57,8 @@ namespace blast4
         util::setOriginToPosition(text);
 
         const sf::FloatRect boardRect = context.board.rect();
-        const float height{ boardRect.height * 0.2f };
-        const sf::FloatRect fitRect{ 0.0f, 0.0f, boardRect.width, height };
+        const float height{ boardRect.size.y * 0.2f };
+        const sf::FloatRect fitRect{ { 0.0f, 0.0f }, { boardRect.size.x, height } };
         util::fit(text, fitRect);
 
         text.setPosition(util::center(boardRect) - (util::size(text) * 0.5f));
@@ -119,9 +118,9 @@ namespace blast4
     {
         StateBase::handleCloseEvents(context, event);
 
-        if (event.type == sf::Event::KeyPressed)
+        if (const auto * keyPtr = event.getIf<sf::Event::KeyPressed>())
         {
-            if (sf::Keyboard::Space == event.key.code)
+            if (sf::Keyboard::Scancode::Space == keyPtr->scancode)
             {
                 context.audio.play("pause");
                 context.states.setChangePending(State::Pause);
@@ -136,9 +135,9 @@ namespace blast4
     {
         StateBase::handleCloseEvents(context, event);
 
-        if (event.type == sf::Event::KeyPressed)
+        if (const auto * keyPtr = event.getIf<sf::Event::KeyPressed>())
         {
-            if (sf::Keyboard::Space == event.key.code)
+            if (sf::Keyboard::Scancode::Space == keyPtr->scancode)
             {
                 context.audio.play("pause");
                 context.states.setChangePending(State::Play);
@@ -165,7 +164,6 @@ namespace blast4
         }
 
         m_stateUPtr->OnExit(context);
-        m_stateUPtr.reset();
         m_stateUPtr = factory(m_statePending.value());
         m_statePending.reset();
         m_stateUPtr->OnEnter(context);

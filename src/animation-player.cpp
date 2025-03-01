@@ -5,7 +5,7 @@
 //
 #include "animation-player.hpp"
 
-#include "util.hpp"
+#include "sfml-util.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -105,7 +105,7 @@ namespace util
             return;
         }
 
-        if ((bounds.width < 1.0f) || (bounds.height < 1.0f))
+        if ((bounds.size.x < 1.0f) || (bounds.size.y < 1.0f))
         {
             std::cerr << "AnimationPlayer::play(bounds=" << bounds
                       << ") called with bounds of sizes less than one." << std::endl;
@@ -415,8 +415,7 @@ namespace util
             return { animName, sf::Vector2i(width, height) };
         }
         catch (...)
-        {
-        }
+        {}
 
         return {};
     }

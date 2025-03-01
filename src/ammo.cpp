@@ -8,9 +8,10 @@
 #include "game.hpp"
 #include "random.hpp"
 #include "settings.hpp"
+#include "sfml-util.hpp"
 #include "sound-player.hpp"
 #include "starship.hpp"
-#include "util.hpp"
+#include "texture-loader.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -24,7 +25,8 @@ namespace blast4
 
     void Ammo::setup(Context & context)
     {
-        m_texture.loadFromFile((context.settings.media_path / "image/ammo.png").string());
+        util::TextureLoader::load(
+            m_texture, (context.settings.media_path / "image/ammo.png").string());
 
         for (int i = 0; i < context.settings.starting_ammo_pickup_count; ++i)
         {
@@ -47,13 +49,10 @@ namespace blast4
 
     void Ammo::placeRandom(Context & context)
     {
-        AmmoPickup pickup;
-        pickup.is_alive = true;
-        pickup.sprite.setTexture(m_texture);
+        AmmoPickup pickup(m_texture);
         pickup.sprite.setColor(context.settings.ammo_color);
         util::fit(pickup.sprite, (context.board.shipSize() * 0.75f));
         util::setOriginToCenter(pickup.sprite);
-
         pickup.sprite.setPosition(context.board.randomFreePosition(context));
 
         m_pickups.push_back(pickup);
@@ -68,7 +67,7 @@ namespace blast4
                 continue;
             }
 
-            if (pickup.sprite.getGlobalBounds().intersects(bulletRect))
+            if (pickup.sprite.getGlobalBounds().findIntersection(bulletRect))
             {
                 pickup.is_alive = false;
                 return true;

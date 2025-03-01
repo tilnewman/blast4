@@ -8,9 +8,10 @@
 #include "game.hpp"
 #include "random.hpp"
 #include "settings.hpp"
+#include "sfml-util.hpp"
 #include "sound-player.hpp"
 #include "starship.hpp"
-#include "util.hpp"
+#include "texture-loader.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -138,8 +139,11 @@ namespace blast4
 
     void Aliens::setup(Context & context)
     {
-        m_texture1.loadFromFile((context.settings.media_path / "image/alien-ship-1.png").string());
-        m_texture2.loadFromFile((context.settings.media_path / "image/alien-ship-2.png").string());
+        util::TextureLoader::load(
+            m_texture1, (context.settings.media_path / "image/alien-ship-1.png"));
+
+        util::TextureLoader::load(
+            m_texture2, (context.settings.media_path / "image/alien-ship-2.png"));
 
         for (int i = 0; i < context.settings.starting_alien_count; ++i)
         {
@@ -201,12 +205,12 @@ namespace blast4
 
         if (context.random.boolean())
         {
-            alien.sprite.setTexture(m_texture1);
+            alien.sprite.setTexture(m_texture1, true);
         }
         else
         {
-            alien.sprite.setTexture(m_texture2);
-        };
+            alien.sprite.setTexture(m_texture2, true);
+        }
 
         alien.sprite.setColor(context.settings.alien_color);
         util::fit(alien.sprite, (context.board.shipSize() * 1.0f));
@@ -226,7 +230,7 @@ namespace blast4
                 continue;
             }
 
-            if (alien.sprite.getGlobalBounds().intersects(rect))
+            if (alien.sprite.getGlobalBounds().findIntersection(rect))
             {
                 return true;
             }
@@ -245,7 +249,7 @@ namespace blast4
                 continue;
             }
 
-            if (alien.sprite.getGlobalBounds().intersects(bulletRect))
+            if (alien.sprite.getGlobalBounds().findIntersection(bulletRect))
             {
                 collidingRect = alien.sprite.getGlobalBounds();
                 alien.is_alive = false;

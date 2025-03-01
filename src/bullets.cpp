@@ -51,9 +51,9 @@ namespace blast4
                     context.states.setChangePending(State::End);
 
                     const sf::Vector2f animPosition{ util::center(shipBounds) -
-                                                     (util::size(shipBounds) * 2.0f) };
+                                                     (shipBounds.size * 2.0f) };
 
-                    const float animSize{ util::size(shipBounds).x * 4.0f };
+                    const float animSize{ shipBounds.size.x * 4.0f };
 
                     context.anim.play("explode", animPosition, animSize, util::AnimConfig{ 2.0f });
                 }
@@ -62,9 +62,9 @@ namespace blast4
                     context.game.ammo = context.game.ammo / 2;
 
                     const sf::Vector2f animPosition{ util::center(shipBounds) -
-                                                     (util::size(shipBounds) * 0.65f) };
+                                                     (shipBounds.size * 0.65f) };
 
-                    const float animSize{ shipBounds.width * 1.3f };
+                    const float animSize{ shipBounds.size.x * 1.3f };
 
                     context.anim.play(
                         "orbcharge",
@@ -98,10 +98,10 @@ namespace blast4
                 context.aliens.placeRandom(context);
 
                 sf::Vector2f animPosition{ util::center(alienShipRect) -
-                                           (util::size(alienShipRect) * 2.0f) };
+                                           (alienShipRect.size * 2.0f) };
 
-                const float animSize{ alienShipRect.width * 4.0f };
-                animPosition.y -= util::size(alienShipRect).y;
+                const float animSize{ alienShipRect.size.x * 4.0f };
+                animPosition.y -= alienShipRect.size.y;
                 context.anim.play("explode", animPosition, animSize, util::AnimConfig{ 2.0f });
 
                 continue;
@@ -125,7 +125,7 @@ namespace blast4
                     continue;
                 }
 
-                if (bulletOuter.shape.getGlobalBounds().intersects(
+                if (bulletOuter.shape.getGlobalBounds().findIntersection(
                         bulletInner.shape.getGlobalBounds()))
                 {
                     bulletOuter.is_alive = false;
@@ -135,10 +135,10 @@ namespace blast4
 
                     const sf::Vector2f animPosition{
                         util::center(bulletInner.shape.getGlobalBounds()) -
-                        (util::size(context.starship.globalBounds()) * 0.5f)
+                        (context.starship.globalBounds().size * 0.5f)
                     };
 
-                    const float animSize{ util::size(context.starship.globalBounds()).x * 1.0f };
+                    const float animSize{ context.starship.globalBounds().size.x * 1.0f };
 
                     context.anim.play(
                         "lightningball",
@@ -192,23 +192,23 @@ namespace blast4
         sf::Vector2f startPosition;
         if (unit_velocity.y < 0.0f)
         {
-            startPosition =
-                sf::Vector2f{ (shipBounds.left + (shipBounds.width * 0.5f)), shipBounds.top };
+            startPosition = sf::Vector2f{ (shipBounds.position.x + (shipBounds.size.x * 0.5f)),
+                                          shipBounds.position.y };
         }
         else if (unit_velocity.y > 0.0f)
         {
-            startPosition = sf::Vector2f{ (shipBounds.left + (shipBounds.width * 0.5f)),
+            startPosition = sf::Vector2f{ (shipBounds.position.x + (shipBounds.size.x * 0.5f)),
                                           util::bottom(shipBounds) };
         }
         else if (unit_velocity.x < 0.0f)
         {
-            startPosition =
-                sf::Vector2f{ shipBounds.left, (shipBounds.top + (shipBounds.height * 0.5f)) };
+            startPosition = sf::Vector2f{ shipBounds.position.x,
+                                          (shipBounds.position.y + (shipBounds.size.y * 0.5f)) };
         }
         else if (unit_velocity.x > 0.0f)
         {
             startPosition = sf::Vector2f{ util::right(shipBounds),
-                                          (shipBounds.top + (shipBounds.height * 0.5f)) };
+                                          (shipBounds.position.y + (shipBounds.size.y * 0.5f)) };
         }
 
         // move bullet position far enough away from the ship sprite that fired it
@@ -217,7 +217,7 @@ namespace blast4
 
         const sf::FloatRect bulletBounds = bullet.shape.getGlobalBounds();
 
-        if (shipBounds.intersects(bulletBounds) ||
+        if (shipBounds.findIntersection(bulletBounds) ||
             context.board.isCollisionWithBlock(bulletBounds) ||
             context.board.isCollisionWithBoardEdge(bulletBounds))
         {

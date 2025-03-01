@@ -4,6 +4,7 @@
 // animation-player.hpp
 //
 #include "random.hpp"
+#include "sfml-defaults.hpp"
 
 #include <filesystem>
 #include <memory>
@@ -62,15 +63,15 @@ namespace util
     {
         struct ParsedDirectoryName
         {
-            std::string name;
-            sf::Vector2i frame_size;
+            std::string name{};
+            sf::Vector2i frame_size{};
         };
 
         struct Image
         {
-            std::string filename;
-            sf::Texture texture;
-            std::vector<sf::IntRect> rects;
+            std::string filename{};
+            sf::Texture texture{};
+            std::vector<sf::IntRect> rects{};
         };
 
         struct ImageCache
@@ -100,12 +101,12 @@ namespace util
 
         struct Animation
         {
-            AnimConfig config;
-            bool is_playing = false;
-            sf::Sprite sprite;
-            std::size_t cache_index = 0;
-            std::size_t frame_index = 0;
-            float sec_elapsed = 0.0f;
+            AnimConfig config{};
+            bool is_playing{ false };
+            sf::Sprite sprite{ util::SfmlDefaults::instance().texture() };
+            std::size_t cache_index{ 0 };
+            std::size_t frame_index{ 0 };
+            float sec_elapsed{ 0.0f };
         };
 
       public:
@@ -133,13 +134,9 @@ namespace util
         }
 
         void stop(const std::string & name);
-
         void update(const float elapsedTimeSec);
-
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
-
         void stopAll();
-
         void reset();
 
       private:

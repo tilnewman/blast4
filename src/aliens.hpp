@@ -2,6 +2,7 @@
 #define BLAST4_ALIENS_HPP
 
 #include "context.hpp"
+#include "sfml-defaults.hpp"
 
 #include <vector>
 
@@ -17,7 +18,7 @@ namespace blast4
         float move_remaining = 0.0f;
         sf::Vector2f unit_velocity;
         float time_until_shoot_sec = 0.0f;
-        sf::Sprite sprite;
+        sf::Sprite sprite{ util::SfmlDefaults::instance().texture() };
 
         bool move(const float amount);
         bool shoot(Context & context);
